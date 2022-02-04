@@ -40,6 +40,10 @@ to quickly create a Cobra application.`,
 			cliQueryConfig.Query,
 			cliQueryConfig.MessageKey)
 
+		if err != nil {
+			check.ExitError(err)
+		}
+
 		rc := 3
 		output := fmt.Sprintf("Total hits: %d", total)
 

@@ -28,7 +28,7 @@ to quickly create a Cobra application.`,
 			check.ExitError(err)
 		}
 
-		rc := 3
+		var rc int
 		output := "Cluster " + health.ClusterName + " is " + health.Status
 
 		switch health.Status {
