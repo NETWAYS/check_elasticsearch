@@ -6,17 +6,16 @@ import (
 	"os"
 )
 
+var (
+	Timeout = 30
+)
+
 var rootCmd = &cobra.Command{
 	Use:   "check_elasticsearch",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
+	Short: "Icinga check plugin to check Elasticsearch",
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		go check.HandleTimeout(Timeout)
+	},
 	Run: Help,
 }
 
@@ -41,13 +40,22 @@ func init() {
 	})
 
 	pfs := rootCmd.PersistentFlags()
-	pfs.StringVarP(&cliConfig.Hostname, "hostname", "H", "localhost", "")
-	pfs.StringVarP(&cliConfig.Username, "username", "U", "", "")
-	pfs.StringVarP(&cliConfig.Password, "password", "P", "", "")
-	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200, "")
-	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false, "")
-	pfs.BoolVar(&cliConfig.Insecure, "insecure", false, "")
+	pfs.StringVarP(&cliConfig.Hostname, "hostname", "H", "localhost",
+		"Address of elasticsearch node")
+	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200,
+		"Port of elasticsearch node")
+	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
+		"Username if authentication is required")
+	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
+		"Password if authentication is required")
+	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false,
+		"Use secure connection")
+	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
+		"Allow use of self signed certificates when using SSL")
+	pfs.IntVarP(&Timeout, "timeout", "t", Timeout,
+		"Timeout for the check")
 
+	rootCmd.Flags().SortFlags = false
 	pfs.SortFlags = false
 }
 
