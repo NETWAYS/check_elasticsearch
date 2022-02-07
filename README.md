@@ -7,7 +7,7 @@ query.
 
 ### Health
 
-Checks the health status of a Elasticsearch cluster.
+Checks the health status of an Elasticsearch cluster.
 
 ```
 Usage:
@@ -18,7 +18,7 @@ Flags:
 
 Global Flags:
   -H, --hostname string   Hostname or ip address of elasticsearch node (default "localhost")
-      --insecure           Allow use of self signed certificates when using SSL
+      --insecure          Allow use of self signed certificates when using SSL
   -P, --password string   Password if authentication is required
   -p, --port int          Port of elasticsearch node (default 9200)
   -S, --tls               Use secure connection
@@ -28,14 +28,14 @@ Global Flags:
 #### Elasticsearch cluster with green status (all nodes are running)
 
 ```
-$ check_elasticsearch health -U exampleuser -P examplepassword  -S --insecure
+$ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
 OK - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
 ```
 
 #### Elasticsearch cluster with yellow status (not all nodes are running)
 
 ```
-$ check_elasticsearch health -U exampleuser -P examplepassword  -S --insecure
+$ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
 WARNING - Cluster es-example-cluster is yellow | status=1 nodes=2 data_nodes=2 active_primary_shards=10 active_shards=13```
 ```
 
@@ -81,7 +81,7 @@ CRITICAL - Total hits: 14074
 
 ## License
 
-Copyright (c) 2021 [NETWAYS GmbH](mailto:info@netways.de)
+Copyright (c) 2022 [NETWAYS GmbH](mailto:info@netways.de)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or
