@@ -18,16 +18,16 @@ type QueryConfig struct {
 
 var cliQueryConfig QueryConfig
 
-// queryCmd represents the query command
 var queryCmd = &cobra.Command{
 	Use:   "query",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Checks the total hits/results of an Elasticsearch query",
+	Long: `Checks the total hits/results of an Elasticsearch query.
+The plugin is currently capable to return the total hits of documents based on a provided query string.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+For more information to the syntax, please visit:
+https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html`,
+	Example: "check_elasticsearch query -q \"event.dataset:sample_web_logs and @timestamp:[now-5m TO now]\" " +
+		"-I \"kibana_sample_data_logs\" -k \"message\"",
 	Run: func(cmd *cobra.Command, args []string) {
 		client := cliConfig.Client()
 		err := client.Connect()
@@ -80,10 +80,18 @@ func init() {
 	rootCmd.AddCommand(queryCmd)
 
 	fs := queryCmd.Flags()
-	fs.StringVarP(&cliQueryConfig.Query, "query", "q", "", "")
-	fs.StringVarP(&cliQueryConfig.Index, "index", "I", "", "")
-	fs.StringVarP(&cliQueryConfig.MessageKey, "msgkey", "k", "", "")
-	fs.IntVarP(&cliQueryConfig.MessageLen, "msglen", "m", 80, "")
-	fs.UintVarP(&cliQueryConfig.Warning, "warning", "w", 20, "")
-	fs.UintVarP(&cliQueryConfig.Critical, "critical", "w", 50, "")
+	fs.StringVarP(&cliQueryConfig.Query, "query", "q", "",
+		"Elasticsearch query")
+	fs.StringVarP(&cliQueryConfig.Index, "index", "I", "_all",
+		"The index which will be used ")
+	fs.StringVarP(&cliQueryConfig.MessageKey, "msgkey", "k", "",
+		"Message of messagekey to display")
+	fs.IntVarP(&cliQueryConfig.MessageLen, "msglen", "m", 80,
+		"Number of characters to display in latest message")
+	fs.UintVarP(&cliQueryConfig.Warning, "warning", "w", 20,
+		"Warning threshold for total hits")
+	fs.UintVarP(&cliQueryConfig.Critical, "critical", "c", 50,
+		"Critical threshold for total hits")
+
+	fs.SortFlags = false
 }
