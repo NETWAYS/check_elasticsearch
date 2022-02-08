@@ -21,6 +21,7 @@ func (c *Client) Info() (i *InfoResponse, err error) {
 
 	i = &InfoResponse{}
 	err = json.NewDecoder(info.Body).Decode(i)
+
 	if err != nil {
 		err = fmt.Errorf("could not decode info json: %w", err)
 		return
@@ -31,6 +32,7 @@ func (c *Client) Info() (i *InfoResponse, err error) {
 
 func (c *Client) Health() (r *HealthResponse, err error) {
 	health, err := c.Client.Cluster.Health()
+
 	if err != nil {
 		err = fmt.Errorf("could not fetch cluster health: %w", err)
 		return
@@ -43,6 +45,7 @@ func (c *Client) Health() (r *HealthResponse, err error) {
 
 	r = &HealthResponse{}
 	err = json.NewDecoder(health.Body).Decode(r)
+
 	if err != nil {
 		err = fmt.Errorf("could not decode health json: %w", err)
 		return
@@ -63,8 +66,9 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	}
 
 	err = json.NewEncoder(&body).Encode(queryBody)
+
 	if err != nil {
-		err = fmt.Errorf("error encoding query: %s", err)
+		err = fmt.Errorf("error encoding query: %w", err)
 		return
 	}
 
@@ -76,6 +80,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		s.WithTrackTotalHits(true),
 		s.WithSize(1), //TODO config?
 	)
+
 	if err != nil {
 		err = fmt.Errorf("could not execute search request: %w", err)
 		return
@@ -88,7 +93,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 
 	var response SearchResponse
 	if err = json.NewDecoder(res.Body).Decode(&response); err != nil {
-		err = fmt.Errorf("error parsing the response body: %s", err)
+		err = fmt.Errorf("error parsing the response body: %w", err)
 		return
 	}
 
