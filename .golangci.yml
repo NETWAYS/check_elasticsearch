@@ -4,14 +4,14 @@ run:
 linters:
   disable-all: false
   enable:
-    - funlen
     - dogsled
     - dupl
-    # - lll
     - whitespace
     - wsl
   presets:
     - bugs
     - unused
-    # - style
   fast: false
+  disable:
+    - gosec
+    - funlen
