@@ -61,7 +61,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			rc = check.Critical
 		} else if total >= cliQueryConfig.Warning {
 			rc = check.Warning
-		} else if total == 0 {
+		} else if total < cliQueryConfig.Warning {
 			rc = check.OK
 		}
 

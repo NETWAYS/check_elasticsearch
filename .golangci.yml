@@ -8,6 +8,7 @@ linters:
     - dupl
     - whitespace
     - wsl
+    - exportloopref
   presets:
     - bugs
     - unused
@@ -15,3 +16,4 @@ linters:
   disable:
     - gosec
     - funlen
+    - scopelint
