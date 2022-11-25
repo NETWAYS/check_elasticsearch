@@ -12,11 +12,14 @@ type QueryConfig struct {
 	Query      string
 	MessageKey string
 	MessageLen int
-	Critical   uint
-	Warning    uint
+	Critical   string
+	Warning    string
 }
 
-var cliQueryConfig QueryConfig
+var (
+	cliQueryConfig QueryConfig
+	rc             int
+)
 
 var queryCmd = &cobra.Command{
 	Use:   "query",
@@ -44,7 +47,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			check.ExitError(err)
 		}
 
-		rc := 3
+		rc = check.Unknown
 		output := fmt.Sprintf("Total hits: %d", total)
 
 		if len(messages) > 0 {
@@ -57,19 +60,26 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			}
 		}
 
-		if total >= cliQueryConfig.Critical {
+		crit, err := check.ParseThreshold(cliQueryConfig.Critical)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		warn, err := check.ParseThreshold(cliQueryConfig.Warning)
+		if err != nil {
+			check.ExitError(err)
+		}
+
+		if crit.DoesViolate(float64(total)) {
 			rc = check.Critical
-		} else if total >= cliQueryConfig.Warning {
+		} else if warn.DoesViolate(float64(total)) {
 			rc = check.Warning
-		} else if total < cliQueryConfig.Warning {
+		} else {
 			rc = check.OK
 		}
 
 		p := perfdata.PerfdataList{
-			{Label: "total", Value: total,
-				Warn: &check.Threshold{Upper: float64(cliQueryConfig.Warning)},
-				Crit: &check.Threshold{Upper: float64(cliQueryConfig.Critical)},
-			},
+			{Label: "total", Value: total, Warn: warn, Crit: crit},
 		}
 
 		check.ExitRaw(rc, output, "|", p.String())
@@ -88,9 +98,9 @@ func init() {
 		"Message of messagekey to display")
 	fs.IntVarP(&cliQueryConfig.MessageLen, "msglen", "m", 80,
 		"Number of characters to display in latest message")
-	fs.UintVarP(&cliQueryConfig.Warning, "warning", "w", 20,
+	fs.StringVarP(&cliQueryConfig.Warning, "warning", "w", "20",
 		"Warning threshold for total hits")
-	fs.UintVarP(&cliQueryConfig.Critical, "critical", "c", 50,
+	fs.StringVarP(&cliQueryConfig.Critical, "critical", "c", "50",
 		"Critical threshold for total hits")
 
 	fs.SortFlags = false
