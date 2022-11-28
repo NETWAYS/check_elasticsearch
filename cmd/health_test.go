@@ -1,0 +1,83 @@
+package cmd
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"os/exec"
+	"strings"
+	"testing"
+)
+
+func TestHealth_ConnectionRefused(t *testing.T) {
+
+	cmd := exec.Command("go", "run", "../main.go", "health", "--port", "9999")
+	out, _ := cmd.CombinedOutput()
+
+	actual := string(out)
+	expected := "UNKNOWN - could not fetch cluster info: dial"
+
+	if !strings.Contains(actual, expected) {
+		t.Error("\nActual: ", actual, "\nExpected: ", expected)
+	}
+}
+
+type HealthTest struct {
+	name     string
+	server   *httptest.Server
+	args     []string
+	expected string
+}
+
+func TestHealthCmd(t *testing.T) {
+	tests := []HealthTest{
+		{
+			name: "health-ok",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"cluster_name":"test","status":"green","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":3,"active_shards":3,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}`))
+			})),
+			args:     []string{"run", "../main.go", "health"},
+			expected: "OK - Cluster test is green | status=0 nodes=1 data_nodes=1 active_primary_shards=3 active_shards=3\n",
+		},
+		{
+			name: "health-yellow",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"cluster_name":"test","status":"yellow","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":3,"active_shards":3,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}`))
+			})),
+			args:     []string{"run", "../main.go", "health"},
+			expected: "WARNING - Cluster test is yellow | status=1 nodes=1 data_nodes=1 active_primary_shards=3 active_shards=3\nexit status 1\n",
+		},
+		{
+			name: "health-red",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"cluster_name":"test","status":"red","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":3,"active_shards":3,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}`))
+			})),
+			args:     []string{"run", "../main.go", "health"},
+			expected: "CRITICAL - Cluster test is red | status=2 nodes=1 data_nodes=1 active_primary_shards=3 active_shards=3\nexit status 2\n",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			defer test.server.Close()
+
+			// We need the random Port extracted
+			u, _ := url.Parse(test.server.URL)
+			cmd := exec.Command("go", append(test.args, "--port", u.Port())...)
+			out, _ := cmd.CombinedOutput()
+
+			actual := string(out)
+
+			if actual != test.expected {
+				t.Error("\nActual: ", actual, "\nExpected: ", test.expected)
+			}
+
+		})
+	}
+}
