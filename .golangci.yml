@@ -17,3 +17,6 @@ linters:
     - gosec
     - funlen
     - scopelint
+    - varcheck
+    - deadcode
+    - structcheck
