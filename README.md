@@ -5,6 +5,27 @@ query.
 
 ## Usage
 
+```
+Usage:
+  check_elasticsearch [flags]
+  check_elasticsearch [command]
+
+Available Commands:
+  health      Checks the health status of an Elasticsearch cluster
+  query       Checks the total hits/results of an Elasticsearch query
+
+Flags:
+  -H, --hostname string   Hostname of the Elasticsearch instance (default "localhost")
+  -p, --port int          Port of the Elasticsearch instance (default 9200)
+  -U, --username string   Username if authentication is required
+  -P, --password string   Password if authentication is required
+  -S, --tls               Use a HTTPS connection
+      --insecure          Skip the verification of the server's TLS certificate
+  -t, --timeout int       Timeout in seconds for the CheckPlugin (default 30)
+  -h, --help              help for check_elasticsearch
+  -v, --version           version for check_elasticsearch
+```
+
 ### Health
 
 Checks the health status of an Elasticsearch cluster.
@@ -13,26 +34,22 @@ Checks the health status of an Elasticsearch cluster.
 Usage:
   check_elasticsearch health
 
-Flags:
-  -h, --help   help for health
-
-Global Flags:
-  -H, --hostname string   Hostname or ip address of elasticsearch node (default "localhost")
-      --insecure          Allow use of self signed certificates when using SSL
-  -P, --password string   Password if authentication is required
-  -p, --port int          Port of elasticsearch node (default 9200)
-  -S, --tls               Use secure connection
-  -U, --username string   Username if authentication is required
+The cluster health status is:
+  green = OK
+  yellow = WARNING
+  red = CRITICAL
 ```
 
-#### Elasticsearch cluster with green status (all nodes are running)
+Examples:
+
+Elasticsearch cluster with green status (all nodes are running):
 
 ```
 $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
 OK - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
 ```
 
-#### Elasticsearch cluster with yellow status (not all nodes are running)
+Elasticsearch cluster with yellow status (not all nodes are running):
 
 ```
 $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
@@ -41,31 +58,34 @@ WARNING - Cluster es-example-cluster is yellow | status=1 nodes=2 data_nodes=2 a
 
 ### Query
 
-Checks the total hits/results of an Elasticsearch query.<br>
-The plugin is currently capable to return the total hits of documents based on a provided query string.
+Checks the total hits/results of an Elasticsearch query.
+
+Hint: The plugin is currently capable to return the total hits of documents based on a provided query string.
 
 ```
 Usage:
   check_elasticsearch query [flags]
 
 Flags:
-  -q, --query string    Elasticsearch query
-  -I, --index string    The index which will be used  (default "_all")
-  -k, --msgkey string   Message of messagekey to display
-  -m, --msglen int      Number of characters to display in latest message (default 80)
-  -w, --warning uint    Warning threshold for total hits (default 20)
-  -c, --critical uint   Critical threshold for total hits (default 50)
-  -h, --help            help for query
+  -q, --query string      The Elasticsearch query
+  -I, --index string      Name of the Index which will be used (default "_all")
+  -k, --msgkey string     Message of messagekey to display
+  -m, --msglen int        Number of characters to display in the latest message (default 80)
+  -w, --warning string    Warning threshold for total hits (default "20")
+  -c, --critical string   Critical threshold for total hits (default "50")
+  -h, --help              help for query
 ```
 
-#### Search for total hits without any message
+Examples:
+
+Search for total hits without any message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs"
 CRITICAL - Total hits: 14074 | total=14074;20;50
 ```
 
-#### Search for total hits with message
+Search for total hits with message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs" -k "message"

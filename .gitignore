@@ -1,3 +1,5 @@
 .idea
 /dist/
+coverage.html
+coverage.out
 check_elasticsearch*

@@ -91,13 +91,13 @@ func init() {
 
 	fs := queryCmd.Flags()
 	fs.StringVarP(&cliQueryConfig.Query, "query", "q", "",
-		"Elasticsearch query")
+		"The Elasticsearch query")
 	fs.StringVarP(&cliQueryConfig.Index, "index", "I", "_all",
-		"The index which will be used ")
+		"Name of the Index which will be used")
 	fs.StringVarP(&cliQueryConfig.MessageKey, "msgkey", "k", "",
 		"Message of messagekey to display")
 	fs.IntVarP(&cliQueryConfig.MessageLen, "msglen", "m", 80,
-		"Number of characters to display in latest message")
+		"Number of characters to display in the latest message")
 	fs.StringVarP(&cliQueryConfig.Warning, "warning", "w", "20",
 		"Warning threshold for total hits")
 	fs.StringVarP(&cliQueryConfig.Critical, "critical", "c", "50",
