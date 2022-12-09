@@ -12,9 +12,9 @@ var healthCmd = &cobra.Command{
 	Long: `Checks the health status of an Elasticsearch cluster
 
 The cluster health status is:
-  green = OK
-  yellow = WARNING
-  red = CRITICAL.`,
+	green = OK
+	yellow = WARNING
+	red = CRITICAL`,
 	Example: "  check_elasticsearch health --hostname \"127.0.0.1\" --port 9200 --username \"exampleUser\"  " +
 		"--password \"examplePass\" --tls --insecure",
 	Run: func(cmd *cobra.Command, args []string) {

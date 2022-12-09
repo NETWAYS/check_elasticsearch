@@ -41,19 +41,19 @@ func init() {
 
 	pfs := rootCmd.PersistentFlags()
 	pfs.StringVarP(&cliConfig.Hostname, "hostname", "H", "localhost",
-		"Address of elasticsearch node")
+		"Hostname of the Elasticsearch instance")
 	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200,
-		"Port of elasticsearch node")
+		"Port of the Elasticsearch instance")
 	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
 		"Username if authentication is required")
 	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
 		"Password if authentication is required")
 	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false,
-		"Use secure connection")
+		"Use a HTTPS connection")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
-		"Allow use of self signed certificates when using SSL")
+		"Skip the verification of the server's TLS certificate")
 	pfs.IntVarP(&Timeout, "timeout", "t", Timeout,
-		"Timeout for the check")
+		"Timeout in seconds for the CheckPlugin")
 
 	rootCmd.Flags().SortFlags = false
 	pfs.SortFlags = false
