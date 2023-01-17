@@ -30,20 +30,26 @@ The cluster health status is:
 		}
 
 		var rc int
-		output := "Cluster " + health.ClusterName + " is " + health.Status
-
 		switch health.Status {
 		case "green":
-			rc = 0
+			rc = check.OK
 		case "yellow":
-			rc = 1
+			rc = check.Warning
+		case "red":
+			rc = check.Critical
 		default:
-			rc = 2
+			rc = check.Unknown
+		}
+
+		var output = "Cluster status unknown"
+		if health.Status != "" {
+			output = "Cluster " + health.ClusterName + " is " + health.Status
 		}
 
 		// green = 0
 		// yellow = 1
 		// red = 2
+		// unknown = 3
 		p := perfdata.PerfdataList{
 			{Label: "status", Value: rc},
 			{Label: "nodes", Value: health.NumberOfNodes},

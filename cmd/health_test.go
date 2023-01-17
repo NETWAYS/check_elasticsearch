@@ -32,6 +32,26 @@ type HealthTest struct {
 func TestHealthCmd(t *testing.T) {
 	tests := []HealthTest{
 		{
+			name: "health-invalid",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{}`))
+			})),
+			args:     []string{"run", "../main.go", "health"},
+			expected: "UNKNOWN - Cluster status unknown | status=3 nodes=0 data_nodes=0 active_primary_shards=0 active_shards=0\nexit status 3\n",
+		},
+		{
+			name: "health-unknown",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"cluster_name":"test","status":"foobar","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":3}`))
+			})),
+			args:     []string{"run", "../main.go", "health"},
+			expected: "UNKNOWN - Cluster test is foobar | status=3 nodes=1 data_nodes=1 active_primary_shards=3 active_shards=0\nexit status 3\n",
+		},
+		{
 			name: "health-ok",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-Elastic-Product", "Elasticsearch")
