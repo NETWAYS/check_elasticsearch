@@ -7,14 +7,14 @@ import (
 )
 
 var (
-	Timeout = 30
+	timeout = 30
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "check_elasticsearch",
 	Short: "Icinga check plugin to check Elasticsearch",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		go check.HandleTimeout(Timeout)
+		go check.HandleTimeout(timeout)
 	},
 	Run: Help,
 }
@@ -52,7 +52,7 @@ func init() {
 		"Use a HTTPS connection")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
 		"Skip the verification of the server's TLS certificate")
-	pfs.IntVarP(&Timeout, "timeout", "t", Timeout,
+	pfs.IntVarP(&timeout, "timeout", "t", timeout,
 		"Timeout in seconds for the CheckPlugin")
 
 	rootCmd.Flags().SortFlags = false
