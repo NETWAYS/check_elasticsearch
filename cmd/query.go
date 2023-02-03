@@ -5,6 +5,7 @@ import (
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 type QueryConfig struct {
@@ -18,7 +19,6 @@ type QueryConfig struct {
 
 var (
 	cliQueryConfig QueryConfig
-	rc             int
 )
 
 var queryCmd = &cobra.Command{
@@ -32,6 +32,11 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 	Example: "check_elasticsearch query -q \"event.dataset:sample_web_logs and @timestamp:[now-5m TO now]\" " +
 		"-I \"kibana_sample_data_logs\" -k \"message\"",
 	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			rc     int
+			output strings.Builder
+		)
+
 		client := cliConfig.Client()
 		err := client.Connect()
 		if err != nil {
@@ -47,16 +52,15 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			check.ExitError(err)
 		}
 
-		rc = check.Unknown
-		output := fmt.Sprintf("Total hits: %d", total)
+		output.WriteString(fmt.Sprintf("Total hits: %d", total))
 
 		if len(messages) > 0 {
-			output += "\n"
+			output.WriteString("\n")
 			for _, msg := range messages {
 				if len(msg) > cliQueryConfig.MessageLen {
 					msg = msg[0:cliQueryConfig.MessageLen]
 				}
-				output += msg + "\n"
+				output.WriteString(msg + "\n")
 			}
 		}
 
@@ -82,7 +86,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			{Label: "total", Value: total, Warn: warn, Crit: crit},
 		}
 
-		check.ExitRaw(rc, output, "|", p.String())
+		check.ExitRaw(rc, output.String(), "|", p.String())
 	},
 }
 
