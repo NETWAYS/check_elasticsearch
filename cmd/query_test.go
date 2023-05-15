@@ -15,7 +15,8 @@ func TestQuery_ConnectionRefused(t *testing.T) {
 	out, _ := cmd.CombinedOutput()
 
 	actual := string(out)
-	expected := "UNKNOWN - could not fetch cluster info: dial"
+
+	expected := "UNKNOWN - could not execute search request: Get \"http://localhost:9999/_all/_search?size=1&track_total_hits=true\": dial"
 
 	if !strings.Contains(actual, expected) {
 		t.Error("\nActual: ", actual, "\nExpected: ", expected)
@@ -42,15 +43,30 @@ func TestQueryCmd(t *testing.T) {
 			expected: "OK - Total hits: 0 | total=0;20;50\n",
 		},
 		{
-			name: "query-default",
+			name: "query-no-such-index",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusNotFound)
+				w.Write([]byte(`{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"kibaa_sample_data_logs","index_uuid":"_na_","index":"example"}],"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"example","index_uuid":"_na_","index":"example"},"status":404}`))
+			})),
+			args:     []string{"run", "../main.go", "query", "-q", "foo", "-I", "foo"},
+			expected: "UNKNOWN - request failed for search: 404 Not Found (*errors.errorString)\nexit status 3\n",
+		},
+		{
+			name: "query-example",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-Elastic-Product", "Elasticsearch")
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte(`{"name":"test","cluster_name":"cluster","cluster_uuid":"6nZDLRvSQ1iDxZUTf0Hrmg","version":{"number":"7.17.7","build_flavor":"default","build_type":"docker","build_hash":"78dcaaa8cee33438b91eca7f5c7f56a70fec9e80","build_date":"2022-10-17T15:29:54.167373105Z","build_snapshot":false,"lucene_version":"8.11.1","minimum_wire_compatibility_version":"6.8.0","minimum_index_compatibility_version":"6.0.0-beta1"},"tagline":"YouKnow,forSearch"}`))
+				w.Write([]byte(`{"took":4,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":14074,"relation":"eq"},"max_score":8.386352,"hits":[{"_index":"kibana_sample_data_logs","_type":"_doc","_id":"dGX9CYgBFkvhWgFatiP9","_score":8.386352,"_source":{"agent":"Mozilla/5.0(X11;Linuxi686)AppleWebKit/534.24(KHTML,likeGecko)Chrome/11.0.696.50Safari/534.24","bytes":1831,"clientip":"30.156.16.164","extension":"","geo":{"srcdest":"US:IN","src":"US","dest":"IN","coordinates":{"lat":55.53741389,"lon":-132.3975144}},"host":"elastic-elastic-elastic.org","index":"kibana_sample_data_logs","ip":"30.156.16.163","machine":{"ram":9663676416,"os":"winxp"},"memory":73240,"message":"30.156.16.163--[2018-09-01T12:44:53.756Z]\"GET/wp-content/HTTP/1.1\"4041831\"-\"\"Mozilla/5.0(X11;Linuxi686)AppleWebKit/534.24(KHTML,likeGecko)Chrome/11.0.696.50Safari/534.24\"","phpmemory":73240,"referer":"http://www.elastic-elastic-elastic.com/success/timothy-l-kopra","request":"/wp-content/","response":404,"tags":["success","info"],"timestamp":"2023-06-10T12:44:53.756Z","url":"https://elastic-elastic-elastic.org/wp-content//","utc_time":"2023-06-10T12:44:53.756Z","event":{"dataset":"sample_web_logs"}}}]}}`))
 			})),
-			args:     []string{"run", "../main.go", "query"},
-			expected: "OK - Total hits: 0 | total=0;20;50\n",
+			args: []string{"run", "../main.go", "query", "-q", "vent.dataset:sample_web_logs and @timestamp:[now-5m TO now]", "-I", "kibana_sample_data_logs", "-k", "message"},
+			expected: `CRITICAL - Total hits: 14074
+30.156.16.163--[2018-09-01T12:44:53.756Z]"GET/wp-content/HTTP/1.1"4041831"-""Moz
+ | total=14074;20;50
+exit status 2
+`,
 		},
+
 		{
 			name: "query-ok",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
