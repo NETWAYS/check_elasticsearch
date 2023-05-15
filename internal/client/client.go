@@ -1,56 +1,124 @@
 package client
 
 import (
-	"crypto/tls"
+	"bytes"
+	es "check_elasticsearch/internal/elasticsearch"
+	"encoding/json"
 	"fmt"
-	es7 "github.com/elastic/go-elasticsearch/v7"
 	"net/http"
+	"net/url"
 )
 
 type Client struct {
-	Url      string
-	Username string
-	Password string
-	Insecure bool
-	Client   *es7.Client
-	Version  string
+	Client http.Client
+	Url    string
 }
 
-func NewClient(url, username, password string) *Client {
+func NewClient(url string, rt http.RoundTripper) *Client {
+	// Small wrapper
+	c := &http.Client{
+		Transport: rt,
+	}
+
 	return &Client{
-		Url:      url,
-		Username: username,
-		Password: password,
-		Insecure: false,
+		Url:    url,
+		Client: *c,
 	}
 }
 
-func (c *Client) Connect() error {
-	cfg := es7.Config{
-		Addresses: []string{c.Url},
-		Username:  c.Username,
-		Password:  c.Password,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: c.Insecure,
-				MinVersion:         tls.VersionTLS11,
+func (c *Client) Health() (r *es.HealthResponse, err error) {
+	u, _ := url.JoinPath(c.Url, "/_cluster/health")
+	resp, err := c.Client.Get(u)
+
+	if err != nil {
+		err = fmt.Errorf("could not fetch cluster health: %w", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("request failed for cluster health: %s", resp.Status)
+		return
+	}
+
+	r = &es.HealthResponse{}
+
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(r)
+
+	if err != nil {
+		err = fmt.Errorf("could not decode health json: %w", err)
+		return
+	}
+
+	return
+}
+
+func (c *Client) SearchMessages(index string, query string, messageKey string) (total uint, messages []string, err error) {
+	queryBody := es.SearchRequest{
+		Query: es.Query{
+			QueryString: &es.QueryString{
+				Query: query,
 			},
 		},
 	}
 
-	esClient, err := es7.NewClient(cfg)
+	data, err := json.Marshal(queryBody)
+	body := bytes.NewReader(data)
+
 	if err != nil {
-		return fmt.Errorf("could not connect to cluster: %w", err)
+		err = fmt.Errorf("error encoding query: %w", err)
+		return
 	}
 
-	c.Client = esClient
+	u, _ := url.JoinPath(c.Url, index, "/_search")
 
-	info, err := c.Info()
+	req, err := http.NewRequest("GET", u, body)
+
+	req.Header.Add("Content-Type", "application/json")
+
 	if err != nil {
-		return err
+		err = fmt.Errorf("error creating request: %w", err)
+		return
 	}
 
-	c.Version = info.Version.Number
+	p := req.URL.Query()
+	p.Add("track_total_hits", "true")
+	p.Add("size", "1")
 
-	return nil
+	req.URL.RawQuery = p.Encode()
+
+	resp, err := c.Client.Do(req)
+
+	if err != nil {
+		err = fmt.Errorf("could not execute search request: %w", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("request failed for search: %s", resp.Status)
+		return
+	}
+
+	var response es.SearchResponse
+
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(&response)
+
+	if err != nil {
+		err = fmt.Errorf("error parsing the response body: %w", err)
+		return
+	}
+
+	total = response.Hits.Total.Value
+
+	for _, hit := range response.Hits.Hits {
+		if value, ok := hit.Source[messageKey]; ok {
+			messages = append(messages, fmt.Sprint(value))
+		} else {
+			err = fmt.Errorf("message does not contain key '%s': %s", messageKey, hit.Id)
+			return
+		}
+	}
+
+	return
 }

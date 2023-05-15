@@ -45,9 +45,9 @@ func init() {
 	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200,
 		"Port of the Elasticsearch instance")
 	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
-		"Username if authentication is required")
+		"Username for HTTP Basic Authentication")
 	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
-		"Password if authentication is required")
+		"Password for HTTP Basic Authentication")
 	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false,
 		"Use a HTTPS connection")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,

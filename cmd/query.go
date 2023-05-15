@@ -37,11 +37,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			output strings.Builder
 		)
 
-		client := cliConfig.Client()
-		err := client.Connect()
-		if err != nil {
-			check.ExitError(err)
-		}
+		client := cliConfig.NewClient()
 
 		total, messages, err := client.SearchMessages(
 			cliQueryConfig.Index,
