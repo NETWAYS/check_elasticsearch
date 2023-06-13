@@ -18,11 +18,7 @@ The cluster health status is:
 	Example: "  check_elasticsearch health --hostname \"127.0.0.1\" --port 9200 --username \"exampleUser\"  " +
 		"--password \"examplePass\" --tls --insecure",
 	Run: func(cmd *cobra.Command, args []string) {
-		client := cliConfig.Client()
-		err := client.Connect()
-		if err != nil {
-			check.ExitError(err)
-		}
+		client := cliConfig.NewClient()
 
 		health, err := client.Health()
 		if err != nil {

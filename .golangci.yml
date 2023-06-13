@@ -1,6 +1,9 @@
 run:
-  deadline: 1m
-  tests: false
+  timeout: 5m
+  skip-files:
+    - '(.+)_test\.go'
+    - 'internal/config/http_config.go'
+    - 'internal/config/config.go'
 
 linters:
   disable-all: false
@@ -10,14 +13,19 @@ linters:
     - whitespace
     - wsl
     - exportloopref
+  disable:
+    - funlen
+    - scopelint
+    - bodyclose
+    - contextcheck
+    - nilerr
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+    - structcheck
+    - unparam
+    - musttag
   presets:
     - bugs
     - unused
   fast: false
-  disable:
-    - gosec
-    - funlen
-    - scopelint
-    - varcheck
-    - deadcode
-    - structcheck

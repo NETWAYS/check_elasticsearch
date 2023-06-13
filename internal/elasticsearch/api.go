@@ -1,14 +1,4 @@
-package client
-
-type InfoResponse struct {
-	Name        string      `json:"name"`
-	ClusterName string      `json:"cluster_name"`
-	Version     InfoVersion `json:"version"`
-}
-
-type InfoVersion struct {
-	Number string `json:"number"`
-}
+package elasticsearch
 
 type HealthResponse struct {
 	ClusterName                 string  `json:"cluster_name"`
@@ -34,8 +24,8 @@ type SearchResponse struct {
 }
 
 type SearchHits struct {
-	Total SearchTotal   `json:"total"`
-	Hits  SearchHitList `json:"hits"`
+	Total SearchTotal `json:"total"`
+	Hits  []SearchHit `json:"hits"`
 }
 
 type SearchTotal struct {
@@ -48,8 +38,6 @@ type SearchHit struct {
 	Source map[string]interface{} `json:"_source"`
 	Id     string                 `json:"_id"`
 }
-
-type SearchHitList []SearchHit
 
 type SearchRequest struct {
 	Query Query `json:"query"`
