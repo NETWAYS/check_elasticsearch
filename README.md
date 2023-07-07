@@ -94,10 +94,34 @@ CRITICAL - Total hits: 14074
  | total=14074;20;50
 ```
 
-## Further Documentation
+### Ingest
 
-* [Elasticsearch API Docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
-* [Elasticsearch SDK for Go](https://github.com/elastic/go-elasticsearch)
+Checks the ingest statistics of Ingest Pipelines. Thresholds check against errors of an Elasticsearch Ingest Pipeline.
+
+```
+Checks the ingest statistics of Ingest Pipelines
+
+Usage:
+  check_elasticsearch ingest [flags]
+
+Flags:
+      --pipeline string          Pipeline Name
+      --failed-warning string    Warning threshold for failed ingest operations. Use min:max for a range. (default "10")
+      --failed-critical string   Critical threshold for failed ingest operations. Use min:max for a range. (default "20")
+  -h, --help                     help for ingest
+```
+
+Examples:
+
+```
+check_elasticsearch ingest --failed-warning 5 --failed-critical 10
+WARNING - Ingest operations may not be alright
+  \_[WARNING] Failed ingest operations for mypipeline: 6; | pipelines.mypipeline.failed=6c
+
+check_elasticsearch ingest --pipeline foobar
+OK - Ingest operations alright
+  \_[OK] Failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
+```
 
 ## License
 

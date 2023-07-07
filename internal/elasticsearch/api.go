@@ -52,3 +52,30 @@ type Query struct {
 type QueryString struct {
 	Query string `json:"query"`
 }
+
+type NodeInfo struct {
+	IP     string     `json:"ip"`
+	Ingest IngestInfo `json:"ingest"`
+}
+
+type IngestInfo struct {
+	Total     IngestStats             `json:"total"`
+	Pipelines map[string]PipelineInfo `json:"pipelines"`
+}
+
+type IngestStats struct {
+	Count   float64 `json:"count"`
+	Current float64 `json:"current"`
+	Failed  float64 `json:"failed"`
+}
+
+type PipelineInfo struct {
+	Count   float64 `json:"count"`
+	Current float64 `json:"current"`
+	Failed  float64 `json:"failed"`
+}
+
+type ClusterStats struct {
+	Nodes       map[string]NodeInfo `json:"nodes"`
+	ClusterName string              `json:"cluster_name"`
+}

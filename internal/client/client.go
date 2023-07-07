@@ -122,3 +122,30 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 
 	return
 }
+
+func (c *Client) NodeStats() (r *es.ClusterStats, err error) {
+	u, _ := url.JoinPath(c.Url, "/_nodes/stats")
+	resp, err := c.Client.Get(u)
+
+	if err != nil {
+		err = fmt.Errorf("could not fetch cluster nodes statistics: %w", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("request failed for cluster nodes statistics: %s", resp.Status)
+		return
+	}
+
+	r = &es.ClusterStats{}
+
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(r)
+
+	if err != nil {
+		err = fmt.Errorf("could not decode nodes statistics json: %w", err)
+		return
+	}
+
+	return
+}
