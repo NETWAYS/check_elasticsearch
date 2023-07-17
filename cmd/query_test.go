@@ -16,7 +16,7 @@ func TestQuery_ConnectionRefused(t *testing.T) {
 
 	actual := string(out)
 
-	expected := "UNKNOWN - could not execute search request: Get \"http://localhost:9999/_all/_search?size=1&track_total_hits=true\": dial"
+	expected := "[UNKNOWN] - could not execute search request: Get \"http://localhost:9999/_all/_search?size=1&track_total_hits=true\": dial"
 
 	if !strings.Contains(actual, expected) {
 		t.Error("\nActual: ", actual, "\nExpected: ", expected)
@@ -40,7 +40,7 @@ func TestQueryCmd(t *testing.T) {
 				w.Write([]byte(`{}`))
 			})),
 			args:     []string{"run", "../main.go", "query"},
-			expected: "OK - Total hits: 0 | total=0;20;50\n",
+			expected: "[OK] - Total hits: 0 | total=0;20;50\n",
 		},
 		{
 			name: "query-no-such-index",
@@ -50,7 +50,7 @@ func TestQueryCmd(t *testing.T) {
 				w.Write([]byte(`{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"kibaa_sample_data_logs","index_uuid":"_na_","index":"example"}],"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"example","index_uuid":"_na_","index":"example"},"status":404}`))
 			})),
 			args:     []string{"run", "../main.go", "query", "-q", "foo", "-I", "foo"},
-			expected: "UNKNOWN - request failed for search: 404 Not Found (*errors.errorString)\nexit status 3\n",
+			expected: "[UNKNOWN] - request failed for search: 404 Not Found (*errors.errorString)\nexit status 3\n",
 		},
 		{
 			name: "query-example",
@@ -60,7 +60,7 @@ func TestQueryCmd(t *testing.T) {
 				w.Write([]byte(`{"took":4,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":14074,"relation":"eq"},"max_score":8.386352,"hits":[{"_index":"kibana_sample_data_logs","_type":"_doc","_id":"dGX9CYgBFkvhWgFatiP9","_score":8.386352,"_source":{"agent":"Mozilla/5.0(X11;Linuxi686)AppleWebKit/534.24(KHTML,likeGecko)Chrome/11.0.696.50Safari/534.24","bytes":1831,"clientip":"30.156.16.164","extension":"","geo":{"srcdest":"US:IN","src":"US","dest":"IN","coordinates":{"lat":55.53741389,"lon":-132.3975144}},"host":"elastic-elastic-elastic.org","index":"kibana_sample_data_logs","ip":"30.156.16.163","machine":{"ram":9663676416,"os":"winxp"},"memory":73240,"message":"30.156.16.163--[2018-09-01T12:44:53.756Z]\"GET/wp-content/HTTP/1.1\"4041831\"-\"\"Mozilla/5.0(X11;Linuxi686)AppleWebKit/534.24(KHTML,likeGecko)Chrome/11.0.696.50Safari/534.24\"","phpmemory":73240,"referer":"http://www.elastic-elastic-elastic.com/success/timothy-l-kopra","request":"/wp-content/","response":404,"tags":["success","info"],"timestamp":"2023-06-10T12:44:53.756Z","url":"https://elastic-elastic-elastic.org/wp-content//","utc_time":"2023-06-10T12:44:53.756Z","event":{"dataset":"sample_web_logs"}}}]}}`))
 			})),
 			args: []string{"run", "../main.go", "query", "-q", "vent.dataset:sample_web_logs and @timestamp:[now-5m TO now]", "-I", "kibana_sample_data_logs", "-k", "message"},
-			expected: `CRITICAL - Total hits: 14074
+			expected: `[CRITICAL] - Total hits: 14074
 30.156.16.163--[2018-09-01T12:44:53.756Z]"GET/wp-content/HTTP/1.1"4041831"-""Moz
  | total=14074;20;50
 exit status 2
@@ -75,7 +75,7 @@ exit status 2
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":2,"relation":"eq"},"max_score":1.0,"hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":1.0,"_source":{"title":"One","tags":["ruby"]}},{"_index":"my_index","_type":"_doc","_id":"y0i9voQB87C1kW3I9y74","_score":1.0,"_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args: []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "--msgkey", "title", "-w", "3"},
-			expected: `OK - Total hits: 2
+			expected: `[OK] - Total hits: 2
 One
 One
  | total=2;3;50
@@ -89,7 +89,7 @@ One
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":2,"relation":"eq"},"max_score":1.0,"hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":1.0,"_source":{"title":"One","tags":["ruby"]}},{"_index":"my_index","_type":"_doc","_id":"y0i9voQB87C1kW3I9y74","_score":1.0,"_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args: []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "--msgkey", "title", "-c", "1"},
-			expected: `CRITICAL - Total hits: 2
+			expected: `[CRITICAL] - Total hits: 2
 One
 One
  | total=2;20;1
@@ -104,7 +104,7 @@ exit status 2
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":2,"relation":"eq"},"max_score":1.0,"hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":1.0,"_source":{"title":"One","tags":["ruby"]}},{"_index":"my_index","_type":"_doc","_id":"y0i9voQB87C1kW3I9y74","_score":1.0,"_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args: []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "--msgkey", "title", "-w", "1"},
-			expected: `WARNING - Total hits: 2
+			expected: `[WARNING] - Total hits: 2
 One
 One
  | total=2;1;50
@@ -119,7 +119,7 @@ exit status 1
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":"foo","relation":"eq"},"max_score":"bar","hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":"bla","_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args:     []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "--msgkey", "title", "-w", "1"},
-			expected: "UNKNOWN - error parsing the response body: json: cannot unmarshal string into Go struct field SearchTotal.hits.total.value of type uint (*fmt.wrapError)\nexit status 3\n",
+			expected: "[UNKNOWN] - error parsing the response body: json: cannot unmarshal string into Go struct field SearchTotal.hits.total.value of type uint (*fmt.wrapError)\nexit status 3\n",
 		},
 	}
 
