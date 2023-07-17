@@ -46,14 +46,14 @@ Elasticsearch cluster with green status (all nodes are running):
 
 ```
 $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
-OK - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
+[OK] - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
 ```
 
 Elasticsearch cluster with yellow status (not all nodes are running):
 
 ```
 $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
-WARNING - Cluster es-example-cluster is yellow | status=1 nodes=2 data_nodes=2 active_primary_shards=10 active_shards=13```
+[WARNING] - Cluster es-example-cluster is yellow | status=1 nodes=2 data_nodes=2 active_primary_shards=10 active_shards=13```
 ```
 
 ### Query
@@ -82,14 +82,14 @@ Search for total hits without any message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs"
-CRITICAL - Total hits: 14074 | total=14074;20;50
+[CRITICAL] - Total hits: 14074 | total=14074;20;50
 ```
 
 Search for total hits with message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs" -k "message"
-CRITICAL - Total hits: 14074
+[CRITICAL] - Total hits: 14074
 30.156.16.163 - - [2018-09-01T12:44:53.756Z] "GET /wp-content/plugins/video-play
  | total=14074;20;50
 ```
@@ -115,11 +115,11 @@ Examples:
 
 ```
 check_elasticsearch ingest --failed-warning 5 --failed-critical 10
-WARNING - Ingest operations may not be alright
+[WARNING] - Ingest operations may not be alright
   \_[WARNING] Failed ingest operations for mypipeline: 6; | pipelines.mypipeline.failed=6c
 
 check_elasticsearch ingest --pipeline foobar
-OK - Ingest operations alright
+[OK] - Ingest operations alright
   \_[OK] Failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
 ```
 
