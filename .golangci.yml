@@ -10,6 +10,7 @@ linters:
    disable:
      - cyclop
      - depguard
+     - dupl
      - exhaustivestruct
      - exhaustruct
      - forbidigo

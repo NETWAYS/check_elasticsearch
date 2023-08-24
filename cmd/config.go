@@ -1,27 +1,29 @@
 package cmd
 
 import (
-	"check_elasticsearch/internal/client"
-	"check_elasticsearch/internal/config"
 	"fmt"
-	"github.com/NETWAYS/go-check"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	"check_elasticsearch/internal/client"
+	"check_elasticsearch/internal/config"
+
+	"github.com/NETWAYS/go-check"
 )
 
 type Config struct {
 	Hostname  string
-	Port      int
 	BasicAuth string
 	Bearer    string
 	CAFile    string
 	CertFile  string
 	KeyFile   string
-	TLS       bool
 	Username  string
 	Password  string
+	Port      int
+	TLS       bool
 	Insecure  bool
 }
 
@@ -58,17 +60,17 @@ func (c *Config) NewClient() *client.Client {
 
 	// Using a Bearer Token for authentication
 	if c.Bearer != "" {
-		var t config.Secret = config.Secret(c.Bearer)
+		var t = config.Secret(c.Bearer)
 		rt = config.NewAuthorizationCredentialsRoundTripper("Bearer", t, rt)
 	}
 
 	// Using a BasicAuth for authentication
 	if c.Username != "" {
 		if c.Password == "" {
-			check.ExitError(fmt.Errorf("Specify the user name and password for server authentication"))
+			check.ExitError(fmt.Errorf("specify the user name and password for server authentication"))
 		}
 
-		var p config.Secret = config.Secret(c.Password)
+		var p = config.Secret(c.Password)
 
 		rt = config.NewBasicAuthRoundTripper(c.Username, p, "", rt)
 	}

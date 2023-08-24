@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var (
@@ -59,7 +60,7 @@ func init() {
 	pfs.SortFlags = false
 }
 
-func Help(cmd *cobra.Command, strings []string) {
+func Help(cmd *cobra.Command, _ []string) {
 	_ = cmd.Usage()
 
 	os.Exit(3)

@@ -2,16 +2,19 @@ package client
 
 import (
 	"bytes"
-	es "check_elasticsearch/internal/elasticsearch"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
+
+	es "check_elasticsearch/internal/elasticsearch"
 )
 
 type Client struct {
 	Client http.Client
-	Url    string
+	URL    string
 }
 
 func NewClient(url string, rt http.RoundTripper) *Client {
@@ -21,14 +24,25 @@ func NewClient(url string, rt http.RoundTripper) *Client {
 	}
 
 	return &Client{
-		Url:    url,
+		URL:    url,
 		Client: *c,
 	}
 }
 
 func (c *Client) Health() (r *es.HealthResponse, err error) {
-	u, _ := url.JoinPath(c.Url, "/_cluster/health")
-	resp, err := c.Client.Get(u)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	u, _ := url.JoinPath(c.URL, "/_cluster/health")
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+
+	if err != nil {
+		err = fmt.Errorf("error creating request: %w", err)
+		return
+	}
+
+	resp, err := c.Client.Do(req)
 
 	if err != nil {
 		err = fmt.Errorf("could not fetch cluster health: %w", err)
@@ -43,6 +57,7 @@ func (c *Client) Health() (r *es.HealthResponse, err error) {
 	r = &es.HealthResponse{}
 
 	defer resp.Body.Close()
+
 	err = json.NewDecoder(resp.Body).Decode(r)
 
 	if err != nil {
@@ -53,6 +68,7 @@ func (c *Client) Health() (r *es.HealthResponse, err error) {
 	return
 }
 
+// nolint: funlen
 func (c *Client) SearchMessages(index string, query string, messageKey string) (total uint, messages []string, err error) {
 	queryBody := es.SearchRequest{
 		Query: es.Query{
@@ -70,9 +86,12 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		return
 	}
 
-	u, _ := url.JoinPath(c.Url, index, "/_search")
+	u, _ := url.JoinPath(c.URL, index, "/_search")
 
-	req, err := http.NewRequest("GET", u, body)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, body)
 
 	req.Header.Add("Content-Type", "application/json")
 
@@ -115,7 +134,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		if value, ok := hit.Source[messageKey]; ok {
 			messages = append(messages, fmt.Sprint(value))
 		} else {
-			err = fmt.Errorf("message does not contain key '%s': %s", messageKey, hit.Id)
+			err = fmt.Errorf("message does not contain key '%s': %s", messageKey, hit.ID)
 			return
 		}
 	}
@@ -124,8 +143,19 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 }
 
 func (c *Client) NodeStats() (r *es.ClusterStats, err error) {
-	u, _ := url.JoinPath(c.Url, "/_nodes/stats")
-	resp, err := c.Client.Get(u)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	u, _ := url.JoinPath(c.URL, "/_nodes/stats")
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+
+	if err != nil {
+		err = fmt.Errorf("error creating request: %w", err)
+		return
+	}
+
+	resp, err := c.Client.Do(req)
 
 	if err != nil {
 		err = fmt.Errorf("could not fetch cluster nodes statistics: %w", err)
