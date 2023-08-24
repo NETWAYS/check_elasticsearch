@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	// These get filled at build time with the proper vaules
+	// These get filled at build time with the proper vaules.
 	version = "development"
 	commit  = "HEAD"
 	date    = "latest"
@@ -16,7 +16,6 @@ func main() {
 	cmd.Execute(buildVersion())
 }
 
-//goland:noinspection GoBoolExpressions
 func buildVersion() string {
 	result := version
 

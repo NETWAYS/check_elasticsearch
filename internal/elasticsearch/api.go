@@ -36,7 +36,7 @@ type SearchHit struct {
 	Index  string                 `json:"_index"`
 	Type   string                 `json:"_type"`
 	Source map[string]interface{} `json:"_source"`
-	Id     string                 `json:"_id"`
+	ID     string                 `json:"_id"`
 }
 
 type SearchRequest struct {

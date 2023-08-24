@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 type QueryConfig struct {

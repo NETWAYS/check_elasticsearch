@@ -2,14 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
-// To store the CLI parameters
+// To store the CLI parameters.
 type PipelineConfig struct {
 	PipelineName   string
 	FailedWarning  string
@@ -47,12 +48,12 @@ var ingestCmd = &cobra.Command{
 		}
 
 		// Calculate states capacity
-		cap := 0
+		amountOfNodes := 0
 		for _, node := range stats.Nodes {
-			cap += len(node.Ingest.Pipelines)
+			amountOfNodes += len(node.Ingest.Pipelines)
 		}
 
-		states := make([]int, 0, cap)
+		states := make([]int, 0, amountOfNodes)
 
 		// Check status for each pipeline
 		var summary strings.Builder
