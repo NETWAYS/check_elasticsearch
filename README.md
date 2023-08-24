@@ -26,6 +26,8 @@ Flags:
   -v, --version           version for check_elasticsearch
 ```
 
+The check plugin respects the environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`.
+
 ### Health
 
 Checks the health status of an Elasticsearch cluster.
