@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"time"
 
-	es "check_elasticsearch/internal/elasticsearch"
+	es "github.com/NETWAYS/check_elasticsearch/internal/elasticsearch"
 )
 
 type Client struct {
