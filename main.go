@@ -1,8 +1,9 @@
 package main
 
 import (
-	"check_elasticsearch/cmd"
 	"fmt"
+
+	"github.com/NETWAYS/check_elasticsearch/cmd"
 )
 
 var (

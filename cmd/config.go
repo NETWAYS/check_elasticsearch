@@ -8,10 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"check_elasticsearch/internal/client"
-	"check_elasticsearch/internal/config"
-
+	"github.com/NETWAYS/check_elasticsearch/internal/client"
 	"github.com/NETWAYS/go-check"
+	checkhttpconfig "github.com/NETWAYS/go-check-network/http/config"
 )
 
 type Config struct {
@@ -41,7 +40,7 @@ func (c *Config) NewClient() *client.Client {
 	}
 
 	// Create TLS configuration for default RoundTripper
-	tlsConfig, err := config.NewTLSConfig(&config.TLSConfig{
+	tlsConfig, err := checkhttpconfig.NewTLSConfig(&checkhttpconfig.TLSConfig{
 		InsecureSkipVerify: c.Insecure,
 		CAFile:             c.CAFile,
 		KeyFile:            c.KeyFile,
@@ -64,8 +63,7 @@ func (c *Config) NewClient() *client.Client {
 
 	// Using a Bearer Token for authentication
 	if c.Bearer != "" {
-		var t = config.Secret(c.Bearer)
-		rt = config.NewAuthorizationCredentialsRoundTripper("Bearer", t, rt)
+		rt = checkhttpconfig.NewAuthorizationCredentialsRoundTripper("Bearer", c.Bearer, rt)
 	}
 
 	// Using a BasicAuth for authentication
@@ -74,9 +72,7 @@ func (c *Config) NewClient() *client.Client {
 			check.ExitError(fmt.Errorf("specify the user name and password for server authentication"))
 		}
 
-		var p = config.Secret(c.Password)
-
-		rt = config.NewBasicAuthRoundTripper(c.Username, p, "", rt)
+		rt = checkhttpconfig.NewBasicAuthRoundTripper(c.Username, c.Password, rt)
 	}
 
 	return client.NewClient(u.String(), rt)
