@@ -42,22 +42,30 @@ func init() {
 
 	pfs := rootCmd.PersistentFlags()
 	pfs.StringVarP(&cliConfig.Hostname, "hostname", "H", "localhost",
-		"Hostname of the Elasticsearch instance")
+		"Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME)")
 	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200,
 		"Port of the Elasticsearch instance")
 	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
-		"Username for HTTP Basic Authentication")
+		"Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)")
 	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
-		"Password for HTTP Basic Authentication")
+		"Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)")
 	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false,
 		"Use a HTTPS connection")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
 		"Skip the verification of the server's TLS certificate")
+	pfs.StringVarP(&cliConfig.CAFile, "ca-file", "", "",
+		"Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)")
+	pfs.StringVarP(&cliConfig.CertFile, "cert-file", "", "",
+		"Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)")
+	pfs.StringVarP(&cliConfig.KeyFile, "key-file", "", "",
+		"Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)")
 	pfs.IntVarP(&timeout, "timeout", "t", timeout,
 		"Timeout in seconds for the CheckPlugin")
 
 	rootCmd.Flags().SortFlags = false
 	pfs.SortFlags = false
+
+	loadFromEnv(&cliConfig)
 }
 
 func Help(cmd *cobra.Command, _ []string) {
