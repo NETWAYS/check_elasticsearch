@@ -42,13 +42,13 @@ func init() {
 
 	pfs := rootCmd.PersistentFlags()
 	pfs.StringVarP(&cliConfig.Hostname, "hostname", "H", "localhost",
-		"Hostname of the Elasticsearch instance")
+		"Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME)")
 	pfs.IntVarP(&cliConfig.Port, "port", "p", 9200,
 		"Port of the Elasticsearch instance")
 	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
-		"Username for HTTP Basic Authentication")
+		"Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)")
 	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
-		"Password for HTTP Basic Authentication")
+		"Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)")
 	pfs.BoolVarP(&cliConfig.TLS, "tls", "S", false,
 		"Use a HTTPS connection")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
@@ -58,6 +58,8 @@ func init() {
 
 	rootCmd.Flags().SortFlags = false
 	pfs.SortFlags = false
+
+	loadFromEnv(&cliConfig)
 }
 
 func Help(cmd *cobra.Command, _ []string) {

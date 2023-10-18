@@ -5,6 +5,8 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -14,17 +16,51 @@ import (
 )
 
 type Config struct {
-	Hostname  string
-	BasicAuth string
-	Bearer    string
-	CAFile    string
-	CertFile  string
-	KeyFile   string
-	Username  string
-	Password  string
+	BasicAuth string // Currently unused in CLI
+	Bearer    string // Currently unused in CLI
+	Hostname  string `env:"CHECK_ELASTICSEARCH_HOSTNAME"`
+	CAFile    string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
+	CertFile  string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
+	KeyFile   string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
+	Username  string `env:"CHECK_ELASTICSEARCH_USERNAME"`
+	Password  string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
 	Port      int
 	TLS       bool
 	Insecure  bool
+}
+
+// LoadFromEnv can be used to load struct values from 'env' tags.
+// Mainly used to avoid passing secrets via the CLI
+//
+//	type Config struct {
+//		Token    string `env:"BEARER_TOKEN"`
+//	}
+func loadFromEnv(config interface{}) {
+	configValue := reflect.ValueOf(config).Elem()
+	configType := configValue.Type()
+
+	for i := 0; i < configValue.NumField(); i++ {
+		field := configType.Field(i)
+		tag := field.Tag.Get("env")
+
+		// If there's no "env" tag, skip this field.
+		if tag == "" {
+			continue
+		}
+
+		envValue := os.Getenv(tag)
+
+		if envValue == "" {
+			continue
+		}
+
+		// Potential for addding different types
+		// nolint: exhaustive, gocritic
+		switch field.Type.Kind() {
+		case reflect.String:
+			configValue.Field(i).SetString(envValue)
+		}
+	}
 }
 
 var cliConfig Config
