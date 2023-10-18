@@ -21,6 +21,9 @@ Flags:
   -P, --password string   Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
   -S, --tls               Use a HTTPS connection
       --insecure          Skip the verification of the server's TLS certificate
+      --ca-file string    Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
+      --cert-file string  Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)
+      --key-file string   Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)
   -t, --timeout int       Timeout in seconds for the CheckPlugin (default 30)
   -h, --help              help for check_elasticsearch
   -v, --version           version for check_elasticsearch

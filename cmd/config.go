@@ -21,7 +21,7 @@ type Config struct {
 	Hostname  string `env:"CHECK_ELASTICSEARCH_HOSTNAME"`
 	CAFile    string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
 	CertFile  string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
-	KeyFile   string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
+	KeyFile   string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
 	Username  string `env:"CHECK_ELASTICSEARCH_USERNAME"`
 	Password  string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
 	Port      int
