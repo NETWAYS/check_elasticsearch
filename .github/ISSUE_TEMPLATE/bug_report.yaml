@@ -24,4 +24,4 @@ body:
     id: recreate
     attributes:
       label: How to recreate the bug?
-      description: Please provide the steps to recreate the issue
+      description: Please provide the steps to recreate the issue.
