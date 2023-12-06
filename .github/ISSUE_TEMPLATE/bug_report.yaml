@@ -21,7 +21,7 @@ body:
       label: Describe the bug
       description: Please provide a concise description of the bug, add any relevant output or error messages. You can use markdown.
   - type: textarea
-    id: description
+    id: recreate
     attributes:
       label: How to recreate the bug?
       description: Please provide the steps to recreate the issue
