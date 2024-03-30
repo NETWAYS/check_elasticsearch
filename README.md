@@ -130,6 +130,46 @@ check_elasticsearch ingest --pipeline foobar
   \_[OK] Failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
 ```
 
+### Snapshot
+
+Checks status of Snapshots.
+
+```
+Checks the status of Elasticsearch snapshots
+The plugin maps snapshot status to the following status codes:
+
+SUCCESS, Exit code 0
+PARTIAL, Exit code 1
+FAILED, Exit code 2
+IN_PROGRESS, Exit code 3
+
+If there are multiple snapshots the plugin uses the worst status
+
+Usage:
+  check_elasticsearch snapshot [flags]
+
+Flags:
+  -a, --all                 Check all retrieved snapshots. If not set only the latest snapshot is checked
+  -N, --number int          Check latest N number snapshots. If not set only the latest snapshot is checked (default 1)
+  -r, --repository string   Comma-separated list of snapshot repository names used to limit the request (default "*")
+  -s, --snapshot string     Comma-separated list of snapshot names to retrieve. Wildcard (*) expressions are supported (default "*")
+  -h, --help                help for snapshot
+```
+
+Examples:
+
+```
+$ check_elasticsearch snapshot
+[OK] - All evaluated snapshots are in state SUCCESS
+
+$ check_elasticsearch snapshot --all -r myrepo
+[CRITICAL] - At least one evaluated snapshot is in state FAILED
+
+$ check_elasticsearch snapshot --number 5 -s mysnapshot
+[WARNING] - At least one evaluated snapshot is in state PARTIAL
+```
+
+
 ## License
 
 Copyright (c) 2022 [NETWAYS GmbH](mailto:info@netways.de)
