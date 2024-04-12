@@ -79,3 +79,29 @@ type ClusterStats struct {
 	Nodes       map[string]NodeInfo `json:"nodes"`
 	ClusterName string              `json:"cluster_name"`
 }
+
+type Snapshot struct {
+	Snapshot           string   `json:"snapshot"`
+	UUID               string   `json:"uuid"`
+	Repository         string   `json:"repository"`
+	Indices            []string `json:"indices"`
+	DataStreams        []string `json:"data_streams"`
+	FeatureStates      []string `json:"feature_states"`
+	IncludeGlobalState bool     `json:"include_global_state"`
+	State              string   `json:"state"`
+	StartTimeInMillis  int      `json:"start_time_in_millis"`
+	EndTimeInMillis    int      `json:"end_time_in_millis"`
+	DurationInMillis   int      `json:"duration_in_millis"`
+	Failures           []string `json:"failures"`
+	Shards             struct {
+		Total      int `json:"total"`
+		Failed     int `json:"failed"`
+		Successful int `json:"successful"`
+	} `json:"shards"`
+}
+
+type SnapshotResponse struct {
+	Snapshots []Snapshot `json:"snapshots"`
+	Total     int        `json:"total"`
+	Remaining int        `json:"remaining"`
+}

@@ -179,3 +179,39 @@ func (c *Client) NodeStats() (r *es.ClusterStats, err error) {
 
 	return
 }
+
+func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	r := &es.SnapshotResponse{}
+
+	u, _ := url.JoinPath(c.URL, "/_snapshot/", repository, snapshot)
+
+	// Retrieve snapshots in descending order to get latest
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u+"?order=desc", nil)
+
+	if err != nil {
+		return r, fmt.Errorf("error creating request: %w", err)
+	}
+
+	resp, err := c.Client.Do(req)
+
+	if err != nil {
+		return r, fmt.Errorf("could not fetch snapshots: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return r, fmt.Errorf("request failed for snapshots: %s", resp.Status)
+	}
+
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(r)
+
+	if err != nil {
+		return r, fmt.Errorf("could not decode snapshot response: %w", err)
+	}
+
+	return r, nil
+}
