@@ -104,6 +104,7 @@ func (c *Config) NewClient() *client.Client {
 	// Using a BasicAuth for authentication
 	if c.Username != "" {
 		if c.Password == "" {
+			// nolint: perfsprint
 			check.ExitError(fmt.Errorf("specify the user name and password for server authentication"))
 		}
 

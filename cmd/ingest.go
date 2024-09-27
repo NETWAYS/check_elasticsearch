@@ -23,7 +23,7 @@ var ingestCmd = &cobra.Command{
 	Use:   "ingest",
 	Short: "Checks the ingest statistics of Ingest Pipelines",
 	Long:  `Checks the ingest statistics of Ingest Pipelines`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		var (
 			rc       int
 			output   string

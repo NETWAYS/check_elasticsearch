@@ -32,7 +32,7 @@ For more information to the syntax, please visit:
 https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html`,
 	Example: "check_elasticsearch query -q \"event.dataset:sample_web_logs and @timestamp:[now-5m TO now]\" " +
 		"-I \"kibana_sample_data_logs\" -k \"message\"",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		var (
 			rc     int
 			output strings.Builder
