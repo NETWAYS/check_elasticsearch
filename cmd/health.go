@@ -17,7 +17,7 @@ The cluster health status is:
 	red = CRITICAL`,
 	Example: "  check_elasticsearch health --hostname \"127.0.0.1\" --port 9200 --username \"exampleUser\"  " +
 		"--password \"examplePass\" --tls --insecure",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		client := cliConfig.NewClient()
 
 		health, err := client.Health()

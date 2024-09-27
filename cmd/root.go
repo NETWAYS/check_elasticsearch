@@ -14,7 +14,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "check_elasticsearch",
 	Short: "Icinga check plugin to check Elasticsearch",
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	PersistentPreRun: func(_ *cobra.Command, _ []string) {
 		go check.HandleTimeout(timeout)
 	},
 	Run: Help,

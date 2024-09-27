@@ -32,7 +32,7 @@ $ check_elasticsearch snapshot --all
 $ check_elasticsearch snapshot --number 5
 [WARNING] - At least one evaluated snapshot is in state PARTIAL
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		repository, _ := cmd.Flags().GetString("repository")
 		snapshot, _ := cmd.Flags().GetString("snapshot")
 		numberOfSnapshots, _ := cmd.Flags().GetInt("number")
