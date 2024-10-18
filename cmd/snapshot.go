@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"errors"
+
 	"github.com/NETWAYS/go-check"
 	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
@@ -37,6 +39,13 @@ $ check_elasticsearch snapshot --number 5
 		snapshot, _ := cmd.Flags().GetString("snapshot")
 		numberOfSnapshots, _ := cmd.Flags().GetInt("number")
 		evalAllSnapshots, _ := cmd.Flags().GetBool("all")
+		noSnapshotsState, _ := cmd.Flags().GetString("no-snapshots-state")
+
+		// Convert --no-snapshots-state to integer and validate input
+		noSnapshotsStateInt, err := convertStateToInt(noSnapshotsState)
+		if err != nil {
+			check.ExitError(fmt.Errorf("invalid value for --no-snapshots-state: %s", noSnapshotsState))
+		}
 
 		var (
 			rc     int
@@ -61,7 +70,7 @@ $ check_elasticsearch snapshot --number 5
 			numberOfSnapshots = len(snapResponse.Snapshots)
 		}
 
-		// Evaluate snashots given their states
+		// Evaluate snapshots given their states
 		sStates := make([]int, 0, len(snapResponse.Snapshots))
 
 		// Check status for each snapshot
@@ -90,23 +99,57 @@ $ check_elasticsearch snapshot --number 5
 			}
 		}
 
+		if len(snapResponse.Snapshots) == 0 {
+			switch noSnapshotsStateInt {
+			case 0:
+				sStates = append(sStates, check.OK)
+			case 1:
+				sStates = append(sStates, check.Warning)
+			case 2:
+				sStates = append(sStates, check.Critical)
+			case 3:
+				sStates = append(sStates, check.Unknown)
+			}
+		}
+
 		rc = result.WorstState(sStates...)
 
-		switch rc {
-		case check.OK:
-			output = "All evaluated snapshots are in state SUCCESS."
-		case check.Warning:
-			output = "At least one evaluated snapshot is in state PARTIAL."
-		case check.Critical:
-			output = "At least one evaluated snapshot is in state FAILED."
-		case check.Unknown:
-			output = "At least one evaluated snapshot is in state IN_PROGRESS."
-		default:
-			output = "Could not evaluate status of snapshots"
+		if len(snapResponse.Snapshots) == 0 {
+			output = "No snapshots found."
+		} else {
+			switch rc {
+			case check.OK:
+				output = "All evaluated snapshots are in state SUCCESS."
+			case check.Warning:
+				output = "At least one evaluated snapshot is in state PARTIAL."
+			case check.Critical:
+				output = "At least one evaluated snapshot is in state FAILED."
+			case check.Unknown:
+				output = "At least one evaluated snapshot is in state IN_PROGRESS."
+			default:
+				output = "Could not evaluate status of snapshots"
+			}
 		}
 
 		check.ExitRaw(rc, output, "repository:", repository, "snapshot:", snapshot, summary.String())
 	},
+}
+
+// Function to convert state to integer
+func convertStateToInt(state string) (int, error) {
+	state = strings.ToUpper(state)
+	switch state {
+	case "OK", "0":
+		return 0, nil
+	case "WARNING", "1":
+		return 1, nil
+	case "CRITICAL", "2":
+		return 2, nil
+	case "UNKNOWN", "3":
+		return 3, nil
+	default:
+		return 0, errors.New("invalid state")
+	}
 }
 
 func init() {
@@ -121,6 +164,8 @@ func init() {
 
 	fs.IntP("number", "N", 1, "Check latest N number snapshots. If not set only the latest snapshot is checked")
 	fs.BoolP("all", "a", false, "Check all retrieved snapshots. If not set only the latest snapshot is checked")
+
+	fs.StringP("no-snapshots-state", "T", "UNKNOWN", "State to assign when no snapshots are found (0, 1, 2, 3, OK, WARNING, CRITICAL, UNKNOWN). If not set this defaults to UNKNOWN")
 
 	snapshotCmd.MarkFlagsMutuallyExclusive("number", "all")
 }
