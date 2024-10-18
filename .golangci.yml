@@ -11,6 +11,7 @@ linters:
    disable:
      - execinquery
      - exportloopref
+     - godot
      - cyclop
      - depguard
      - dupl
