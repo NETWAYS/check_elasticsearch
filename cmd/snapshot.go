@@ -135,7 +135,7 @@ $ check_elasticsearch snapshot --number 5
 	},
 }
 
-// Function to convert state to integer
+// Function to convert state to integer.
 func convertStateToInt(state string) (int, error) {
 	state = strings.ToUpper(state)
 	switch state {
