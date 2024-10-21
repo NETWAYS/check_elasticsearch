@@ -149,11 +149,12 @@ Usage:
   check_elasticsearch snapshot [flags]
 
 Flags:
-  -a, --all                 Check all retrieved snapshots. If not set only the latest snapshot is checked
-  -N, --number int          Check latest N number snapshots. If not set only the latest snapshot is checked (default 1)
-  -r, --repository string   Comma-separated list of snapshot repository names used to limit the request (default "*")
-  -s, --snapshot string     Comma-separated list of snapshot names to retrieve. Wildcard (*) expressions are supported (default "*")
-  -h, --help                help for snapshot
+  -a, --all                         Check all retrieved snapshots. If not set only the latest snapshot is checked
+  -N, --number int                  Check latest N number snapshots. If not set only the latest snapshot is checked (default 1)
+  -r, --repository string           Comma-separated list of snapshot repository names used to limit the request (default "*")
+  -s, --snapshot string             Comma-separated list of snapshot names to retrieve. Wildcard (*) expressions are supported (default "*")
+  -T, --no-snapshots-state string   Set exit code to return if no snapshots are found. Supported values are 0, 1, 2, 3, OK, Warning, Critical, Unknown (case-insensitive - default "Unknown")
+  -h, --help                        help for snapshot
 ```
 
 Examples:

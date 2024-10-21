@@ -45,7 +45,7 @@ type SnapshotTest struct {
 func TestSnapshotCmd(t *testing.T) {
 	tests := []SnapshotTest{
 		{
-			name: "no-snapshot",
+			name: "snapshot-invalid-response",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-Elastic-Product", "Elasticsearch")
 				w.WriteHeader(http.StatusOK)
@@ -53,6 +53,56 @@ func TestSnapshotCmd(t *testing.T) {
 			})),
 			args:     []string{"run", "../main.go", "snapshot"},
 			expected: "[UNKNOWN] - could not decode snapshot response",
+		},
+		{
+			name: "snapshot-none-available-ok",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"snapshots":[],"total":0,"remaining":0}`))
+			})),
+			args:     []string{"run", "../main.go", "snapshot", "--no-snapshots-state", "OK"},
+			expected: "[OK] - No snapshots found",
+		},
+		{
+			name: "snapshot-none-available-warning",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"snapshots":[],"total":0,"remaining":0}`))
+			})),
+			args:     []string{"run", "../main.go", "snapshot", "--no-snapshots-state", "WARNING"},
+			expected: "[WARNING] - No snapshots found",
+		},
+		{
+			name: "snapshot-none-available-critical",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"snapshots":[],"total":0,"remaining":0}`))
+			})),
+			args:     []string{"run", "../main.go", "snapshot", "--no-snapshots-state", "CRITICAL"},
+			expected: "[CRITICAL] - No snapshots found",
+		},
+		{
+			name: "snapshot-none-available-unknown",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"snapshots":[],"total":0,"remaining":0}`))
+			})),
+			args:     []string{"run", "../main.go", "snapshot", "--no-snapshots-state", "UNKNOWN"},
+			expected: "[UNKNOWN] - No snapshots found",
+		},
+		{
+			name: "snapshot-none-available-default",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"snapshots":[],"total":0,"remaining":0}`))
+			})),
+			args:     []string{"run", "../main.go", "snapshot"},
+			expected: "[UNKNOWN] - No snapshots found",
 		},
 		{
 			name: "snapshot-ok",
