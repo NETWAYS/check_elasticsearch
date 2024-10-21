@@ -38,7 +38,7 @@ func loadFromEnv(config interface{}) {
 	configValue := reflect.ValueOf(config).Elem()
 	configType := configValue.Type()
 
-	for i := 0; i < configValue.NumField(); i++ {
+	for i := range configValue.NumField() {
 		field := configType.Field(i)
 		tag := field.Tag.Get("env")
 

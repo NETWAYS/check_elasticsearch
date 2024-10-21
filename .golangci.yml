@@ -1,17 +1,20 @@
 run:
   timeout: 5m
   tests: false
-  skip-files:
+
+issues.skip-files:
     - 'internal/config/http_config.go'
     - 'internal/config/config.go'
 
 linters:
    enable-all: true
    disable:
+     - execinquery
+     - exportloopref
+     - godot
      - cyclop
      - depguard
      - dupl
-     - exhaustivestruct
      - exhaustruct
      - forbidigo
      - forcetypeassert
@@ -19,7 +22,7 @@ linters:
      - gochecknoglobals
      - gochecknoinits
      - godox
-     - goerr113
+     - err113
      - gofumpt
      - gomnd
      - mnd
