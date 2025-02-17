@@ -9,7 +9,6 @@ issues.skip-files:
 linters:
    enable-all: true
    disable:
-     - execinquery
      - exportloopref
      - godot
      - cyclop
@@ -24,7 +23,6 @@ linters:
      - godox
      - err113
      - gofumpt
-     - gomnd
      - mnd
      - lll
      - musttag
@@ -35,8 +33,3 @@ linters:
      - tagliatelle
      - varnamelen
      - wrapcheck
-linters-settings:
-   estif:
-     min-complexity: 4
-   maligned:
-     suggest-new: true
