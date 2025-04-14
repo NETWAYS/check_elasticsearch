@@ -25,6 +25,7 @@ linters:
     - tagliatelle
     - varnamelen
     - wrapcheck
+    - funlen
   exclusions:
     generated: lax
     presets:
