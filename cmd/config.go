@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"errors"
 	"net"
 	"net/http"
 	"net/url"
@@ -34,7 +34,7 @@ type Config struct {
 //	type Config struct {
 //		Token    string `env:"BEARER_TOKEN"`
 //	}
-func loadFromEnv(config interface{}) {
+func loadFromEnv(config any) {
 	configValue := reflect.ValueOf(config).Elem()
 	configType := configValue.Type()
 
@@ -104,8 +104,7 @@ func (c *Config) NewClient() *client.Client {
 	// Using a BasicAuth for authentication
 	if c.Username != "" {
 		if c.Password == "" {
-			// nolint: perfsprint
-			check.ExitError(fmt.Errorf("specify the user name and password for server authentication"))
+			check.ExitError(errors.New("specify the user name and password for server authentication"))
 		}
 
 		rt = checkhttpconfig.NewBasicAuthRoundTripper(c.Username, c.Password, rt)

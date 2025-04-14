@@ -68,7 +68,6 @@ func (c *Client) Health() (r *es.HealthResponse, err error) {
 	return
 }
 
-// nolint: funlen
 func (c *Client) SearchMessages(index string, query string, messageKey string) (total uint, messages []string, err error) {
 	queryBody := es.SearchRequest{
 		Query: es.Query{
