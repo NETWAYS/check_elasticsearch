@@ -1,0 +1,331 @@
+{
+    "ExternalCommand": {
+        "elasticsearch-health": {
+            "arguments": {
+                "--insecure": {
+                    "description": "Skip the verification of the server's TLS certificate (default false)",
+                    "set_if": "$elasticsearch_insecure$"
+                },
+                "-H": {
+                    "description": "Hostname of the Elasticsearch instance (default 'localhost')",
+                    "value": "$elasticsearch_hostname$"
+                },
+                "-P": {
+                    "description": "Password if authentication is required",
+                    "value": "$elasticsearch_password$"
+                },
+                "-S": {
+                    "description": "Use a HTTPS connection (default false)",
+                    "set_if": "$elasticsearch_tls$"
+                },
+                "-U": {
+                    "description": "Username if authentication is required",
+                    "value": "$elasticsearch_username$"
+                },
+                "-p": {
+                    "description": "Port of the Elasticsearch instance (default 9200)",
+                    "value": "$elasticsearch_port$"
+                },
+                "-t": {
+                    "description": "Timeout in seconds for the CheckPlugin (default 30)",
+                    "value": "$elasticsearch_timeout$"
+                }
+            },
+            "command": "check_elasticsearch health",
+            "fields": [],
+            "methods_execute": "PluginCheck",
+            "object_name": "elasticsearch-health",
+            "object_type": "external_object",
+            "timeout": 60
+        },
+        "elasticsearch-query": {
+            "arguments": {
+                "--insecure": {
+                    "description": "Skip the verification of the server's TLS certificate (default false)",
+                    "set_if": "$elasticsearch_insecure$"
+                },
+                "-H": {
+                    "description": "Hostname of the Elasticsearch instance (default 'localhost')",
+                    "value": "$elasticsearch_hostname$"
+                },
+                "-I": {
+                    "description": "Name of the Index which will be used (default '_all')",
+                    "value": "$elasticsearch_query_index$"
+                },
+                "-P": {
+                    "description": "Password if authentication is required",
+                    "value": "$elasticsearch_password$"
+                },
+                "-S": {
+                    "description": "Use a HTTPS connection (default false)",
+                    "set_if": "$elasticsearch_tls$"
+                },
+                "-U": {
+                    "description": "Username if authentication is required",
+                    "value": "$elasticsearch_username$"
+                },
+                "-c": {
+                    "description": "Critical threshold for total hits (default '50')",
+                    "value": "$elasticsearch_query_critical$"
+                },
+                "-k": {
+                    "description": "Message of messagekey to display",
+                    "value": "$elasticsearch_query_msgkey$"
+                },
+                "-m": {
+                    "description": "Number of characters to display in the latest message (default 80)",
+                    "value": "$elasticsearch_query_msglen$"
+                },
+                "-p": {
+                    "description": "Port of the Elasticsearch instance (default 9200)",
+                    "value": "$elasticsearch_port$"
+                },
+                "-q": {
+                    "description": "The Elasticsearch query",
+                    "value": "$elasticsearch_query$"
+                },
+                "-t": {
+                    "description": "Timeout in seconds for the CheckPlugin (default 30)",
+                    "value": "$elasticsearch_timeout$"
+                },
+                "-w": {
+                    "description": "Warning threshold for total hits (default '20')",
+                    "value": "$elasticsearch_query_warning$"
+                }
+            },
+            "command": "check_elasticsearch query",
+            "fields": [
+                {
+                    "datafield_id": 27,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 28,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 29,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 30,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 31,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 32,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "methods_execute": "PluginCheck",
+            "object_name": "elasticsearch-query",
+            "object_type": "external_object",
+            "timeout": 60
+        }
+    },
+    "CommandTemplate": {
+        "elasticsearch-netways": {
+            "arguments": {
+                "--insecure": {
+                    "description": "Skip the verification of the server's TLS certificate (default false)",
+                    "set_if": "$elasticsearch_insecure$",
+                    "set_if_format": "string"
+                },
+                "-H": {
+                    "description": "Hostname of the Elasticsearch instance (default 'localhost')",
+                    "value": "$elasticsearch_hostname$"
+                },
+                "-P": {
+                    "description": "Password if authentication is required",
+                    "value": "$elasticsearch_password$"
+                },
+                "-S": {
+                    "description": "Use a HTTPS connection (default false)",
+                    "set_if": "$elasticsearch_tls$",
+                    "set_if_format": "string"
+                },
+                "-U": {
+                    "description": "Username if authentication is required",
+                    "value": "$elasticsearch_username$"
+                },
+                "-p": {
+                    "description": "Port of the Elasticsearch instance (default 9200)",
+                    "value": "$elasticsearch_port$"
+                },
+                "-t": {
+                    "description": "Timeout in seconds for the CheckPlugin (default 30)",
+                    "value": "$elasticsearch_timeout$"
+                }
+            },
+            "command": "PluginDir + /check_elasticsearch",
+            "fields": [
+                {
+                    "datafield_id": 20,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 25,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 21,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 22,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 23,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 26,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 24,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "methods_execute": "PluginCheck",
+            "object_name": "elasticsearch-netways",
+            "object_type": "template"
+        }
+    },
+    "Datafield": {
+        "27": {
+            "varname": "elasticsearch_query",
+            "caption": "elasticsearch_query",
+            "description": "The Elasticsearch query",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "28": {
+            "varname": "elasticsearch_query_critical",
+            "caption": "elasticsearch_query_critical",
+            "description": "Critical threshold for total hits (default '50')",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "29": {
+            "varname": "elasticsearch_query_index",
+            "caption": "elasticsearch_query_index",
+            "description": "Name of the Index which will be used (default '_all')",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "30": {
+            "varname": "elasticsearch_query_msgkey",
+            "caption": "elasticsearch_query_msgkey",
+            "description": "Message of messagekey to display",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "31": {
+            "varname": "elasticsearch_query_msglen",
+            "caption": "elasticsearch_query_msglen",
+            "description": "Number of characters to display in the latest message (default 80)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "32": {
+            "varname": "elasticsearch_query_warning",
+            "caption": "elasticsearch_query_warning",
+            "description": "Warning threshold for total hits (default '20')",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "20": {
+            "varname": "elasticsearch_hostname",
+            "caption": "elasticsearch_hostname",
+            "description": "Hostname of the Elasticsearch instance (default 'localhost')",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "25": {
+            "varname": "elasticsearch_insecure",
+            "caption": "elasticsearch_insecure",
+            "description": "Skip the verification of the server's TLS certificate (default false)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "21": {
+            "varname": "elasticsearch_password",
+            "caption": "elasticsearch_password",
+            "description": "Password if authentication is required",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "22": {
+            "varname": "elasticsearch_port",
+            "caption": "elasticsearch_port",
+            "description": "Port of the Elasticsearch instance (default 9200)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "23": {
+            "varname": "elasticsearch_timeout",
+            "caption": "elasticsearch_timeout",
+            "description": "Timeout in seconds for the CheckPlugin (default 30)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "26": {
+            "varname": "elasticsearch_tls",
+            "caption": "elasticsearch_tls",
+            "description": "Use a HTTPS connection (default false)",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "24": {
+            "varname": "elasticsearch_username",
+            "caption": "elasticsearch_username",
+            "description": "Username if authentication is required",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {},
+            "category": null
+        }
+    }
+}
