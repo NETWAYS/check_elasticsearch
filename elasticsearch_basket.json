@@ -1,0 +1,275 @@
+{
+    "Command": {
+        "elasticsearch-netways": {
+            "arguments": {
+                "--ca-file": {
+                    "description": "Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)",
+                    "value": "$elasticsearch_ca$"
+                },
+                "--cert-file": {
+                    "description": "Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)",
+                    "value": "$elasticsearch_cert$"
+                },
+                "--hostname": {
+                    "description": "Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME) (default \"localhost\")",
+                    "value": "$host.address$"
+                },
+                "--insecure": {
+                    "description": "Skip the verification of the server's TLS certificate",
+                    "value": "$elasticsearch_insecure$"
+                },
+                "--key-file": {
+                    "description": "Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)",
+                    "value": "$elasticsearch_key$"
+                },
+                "--password": {
+                    "description": "Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)",
+                    "value": "$elasticsearch_password$"
+                },
+                "--port": {
+                    "description": "Port of the Elasticsearch instance (default 9200)",
+                    "value": "$elasticsearch_port$"
+                },
+                "--timeout": {
+                    "description": "Timeout in seconds for the CheckPlugin (default 30)",
+                    "value": "$elasticsearch_timeout$"
+                },
+                "--tls": {
+                    "description": "Use a HTTPS connection",
+                    "value": "$elasticsearch_tls$"
+                },
+                "--username": {
+                    "description": "Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)",
+                    "value": "$elasticsearch_user$"
+                },
+                "mode": {
+                    "skip_key": true,
+                    "value": "$elasticsearch_mode$",
+                    "order": "-1"
+                }
+            },
+            "command": "PluginDir + /check_elasticsearch",
+            "fields": [],
+            "methods_execute": "PluginCheck",
+            "object_name": "elasticsearch-netways",
+            "object_type": "object",
+            "uuid": "68b7eea8-4dfe-4408-98b0-c1e0a955ee0a"
+        }
+    },
+    "ServiceTemplate": {
+        "Elasticsearch": {
+            "check_command": "elasticsearch-netways",
+            "fields": [
+                {
+                    "datafield_id": 516,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 517,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 518,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 519,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 525,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 520,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 521,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 522,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 523,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 524,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "imports": [
+                "Default Service"
+            ],
+            "object_name": "Elasticsearch",
+            "object_type": "template",
+            "uuid": "74302643-d261-4c30-8145-b611a9e7da3e"
+        }
+    },
+    "DataList": {
+        "Elasticsearch Modes": {
+            "entries": [
+                {
+                    "entry_name": "health",
+                    "entry_value": "health",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "ingest",
+                    "entry_value": "ingest",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "query",
+                    "entry_value": "query",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "snapshot",
+                    "entry_value": "snapshot",
+                    "format": "string",
+                    "allowed_roles": null
+                }
+            ],
+            "list_name": "Elasticsearch Modes",
+            "owner": "admin",
+            "uuid": "d731d5ce-0f4b-4a6d-a800-ed104bb59666"
+        }
+    },
+    "Datafield": {
+        "516": {
+            "uuid": "7ac38474-2b6e-4217-8aef-bea2538dce02",
+            "varname": "elasticsearch_ca",
+            "caption": "Elasticsearch CA File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "517": {
+            "uuid": "b5a570fa-2215-485e-b342-3a63a801229e",
+            "varname": "elasticsearch_cert",
+            "caption": "Elasticsearch Certificate File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "518": {
+            "uuid": "3d8e5b41-a9f8-4931-bd24-c9316db3a419",
+            "varname": "elasticsearch_insecure",
+            "caption": "Skip Verification",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "519": {
+            "uuid": "8d3f1f9e-856d-4dc5-bf8a-5a648ab7df22",
+            "varname": "elasticsearch_key",
+            "caption": "Elasticsearch Key File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "525": {
+            "uuid": "d93029ce-36fc-44b9-9331-515aff7ecde0",
+            "varname": "elasticsearch_mode",
+            "caption": "Mode for the Checkplugin",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeDatalist",
+            "format": null,
+            "settings": {
+                "behavior": "strict",
+                "data_type": "string",
+                "datalist": "Elasticsearch Modes"
+            },
+            "category": null
+        },
+        "520": {
+            "uuid": "87fd8414-cdc6-48b2-9cbe-622c626ebfd5",
+            "varname": "elasticsearch_password",
+            "caption": "Password for HTTP Basic Auth",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "hidden"
+            },
+            "category": null
+        },
+        "521": {
+            "uuid": "37056813-8429-43ea-8519-0d7382706c90",
+            "varname": "elasticsearch_port",
+            "caption": "Port of the Elasticsearch Instance",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "522": {
+            "uuid": "6ae51c2f-b9dd-4ea0-b9d0-4dbfbf8b04a1",
+            "varname": "elasticsearch_timeout",
+            "caption": "Timeout in seconds",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "523": {
+            "uuid": "c04487b5-994f-40dc-b706-f9c70c5fa931",
+            "varname": "elasticsearch_tls",
+            "caption": "Use a HTTPS Connection",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "524": {
+            "uuid": "8e4167a8-639c-4a30-831c-07d0eab9d8e0",
+            "varname": "elasticsearch_user",
+            "caption": "Username for HTTP Basic Authentication",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        }
+    }
+}
