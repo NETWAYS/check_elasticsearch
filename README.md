@@ -12,21 +12,23 @@ Usage:
 
 Available Commands:
   health      Checks the health status of an Elasticsearch cluster
+  ingest      Checks the ingest statistics of Ingest Pipelines
   query       Checks the total hits/results of an Elasticsearch query
+  snapshot    Checks the status of Elasticsearch snapshots
 
 Flags:
-  -H, --hostname string   Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME) (default "localhost")
-  -p, --port int          Port of the Elasticsearch instance (default 9200)
-  -U, --username string   Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)
-  -P, --password string   Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
-  -S, --tls               Use a HTTPS connection
-      --insecure          Skip the verification of the server's TLS certificate
-      --ca-file string    Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
-      --cert-file string  Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)
-      --key-file string   Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)
-  -t, --timeout int       Timeout in seconds for the CheckPlugin (default 30)
-  -h, --help              help for check_elasticsearch
-  -v, --version           version for check_elasticsearch
+  -H, --hostname string    Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME) (default "localhost")
+  -p, --port int           Port of the Elasticsearch instance (default 9200)
+  -U, --username string    Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)
+  -P, --password string    Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
+  -S, --tls                Use a HTTPS connection
+      --insecure           Skip the verification of the server's TLS certificate
+      --ca-file string     Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
+      --cert-file string   Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)
+      --key-file string    Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)
+  -t, --timeout int        Timeout in seconds for the CheckPlugin (default 30)
+  -h, --help               help for check_elasticsearch
+  -v, --version            version for check_elasticsearch
 ```
 
 The check plugin respects the environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`.
