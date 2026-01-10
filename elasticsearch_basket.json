@@ -1,0 +1,540 @@
+{
+    "Command": {
+        "elasticsearch-netways": {
+            "arguments": {
+                "--all": {
+                    "description": "Check all retrieved snapshots. If not set only the latest snapshot is checked",
+                    "value": "$elasticsearch_snapshot_all$"
+                },
+                "--ca-file": {
+                    "description": "Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)",
+                    "value": "$elasticsearch_ca$"
+                },
+                "--cert-file": {
+                    "description": "Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)",
+                    "value": "$elasticsearch_cert$"
+                },
+                "--critical": {
+                    "description": "Critical threshold for total hits (default \"50\")",
+                    "value": "$elasticsearch_query_critical$"
+                },
+                "--failed-critical": {
+                    "description": "Critical threshold for failed ingest operations. Use min:max for a range. (default \"20\")",
+                    "value": "$elasticsearch_ingest_critical$"
+                },
+                "--failed-warning": {
+                    "description": "Warning threshold for failed ingest operations. Use min:max for a range. (default \"10\")",
+                    "value": "$elasticsearch_ingest_warning$"
+                },
+                "--hostname": {
+                    "description": "Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME) (default \"localhost\")",
+                    "value": "$host.address$"
+                },
+                "--index": {
+                    "description": "Name of the Index which will be used (default \"_all\")",
+                    "value": "$elasticsearch_query_index$"
+                },
+                "--insecure": {
+                    "description": "Skip the verification of the server's TLS certificate",
+                    "value": "$elasticsearch_insecure$"
+                },
+                "--key-file": {
+                    "description": "Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)",
+                    "value": "$elasticsearch_key$"
+                },
+                "--msgkey": {
+                    "description": "Message of messagekey to display",
+                    "value": "$elasticsearch_query_msgkey$"
+                },
+                "--msglen": {
+                    "description": "Number of characters to display in the latest message (default 80)",
+                    "value": "$elasticsearch_query_msglen$"
+                },
+                "--no-snapshots-state": {
+                    "description": "State to assign when no snapshots are found (0, 1, 2, 3, OK, WARNING, CRITICAL, UNKNOWN). If not set this defaults to UNKNOWN (default \"UNKNOWN\")",
+                    "value": "$elasticsearch_snapshot_state$"
+                },
+                "--number": {
+                    "description": "Check latest N number snapshots. If not set only the latest snapshot is checked (default 1)",
+                    "value": "$elasticsearch_snapshot_number$"
+                },
+                "--password": {
+                    "description": "Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)",
+                    "value": "$elasticsearch_password$"
+                },
+                "--pipeline": {
+                    "description": "Pipeline Name",
+                    "value": "$elasticsearch_ingest_pipeline$"
+                },
+                "--port": {
+                    "description": "Port of the Elasticsearch instance (default 9200)",
+                    "value": "$elasticsearch_port$"
+                },
+                "--query": {
+                    "description": "The Elasticsearch query",
+                    "value": "$elasticsearch_query_query$"
+                },
+                "--repository": {
+                    "description": "Comma-separated list of snapshot repository names used to limit the request (default \"*\")",
+                    "value": "$elasticsearch_snapshot_repository$"
+                },
+                "--snapshot": {
+                    "description": "Comma-separated list of snapshot names to retrieve. Wildcard (*) expressions are supported (default \"*\")",
+                    "value": "$elasticsearch_snapshot_snapshot$"
+                },
+                "--timeout": {
+                    "description": "Timeout in seconds for the CheckPlugin (default 30)",
+                    "value": "$elasticsearch_timeout$"
+                },
+                "--tls": {
+                    "description": "Use a HTTPS connection",
+                    "value": "$elasticsearch_tls$"
+                },
+                "--username": {
+                    "description": "Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)",
+                    "value": "$elasticsearch_user$"
+                },
+                "--warning": {
+                    "description": "Warning threshold for total hits (default \"20\")",
+                    "value": "$elasticsearch_query_warning$"
+                },
+                "mode": {
+                    "skip_key": true,
+                    "value": "$elasticsearch_mode$",
+                    "order": "-1"
+                }
+            },
+            "command": "PluginDir + /check_elasticsearch",
+            "fields": [],
+            "methods_execute": "PluginCheck",
+            "object_name": "elasticsearch-netways",
+            "object_type": "object",
+        }
+    },
+    "ServiceTemplate": {
+        "Elasticsearch": {
+            "check_command": "elasticsearch-netways",
+            "fields": [
+                {
+                    "datafield_id": 516,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 517,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 526,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22ingest%22"
+                },
+                {
+                    "datafield_id": 528,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22ingest%22"
+                },
+                {
+                    "datafield_id": 527,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22ingest%22"
+                },
+                {
+                    "datafield_id": 518,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 519,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 525,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 520,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 521,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 534,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 530,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 531,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 532,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 529,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 533,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22query%22"
+                },
+                {
+                    "datafield_id": 535,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22snapshot%22"
+                },
+                {
+                    "datafield_id": 537,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22snapshot%22"
+                },
+                {
+                    "datafield_id": 538,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22snapshot%22"
+                },
+                {
+                    "datafield_id": 539,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22snapshot%22"
+                },
+                {
+                    "datafield_id": 536,
+                    "is_required": "n",
+                    "var_filter": "service.vars.elasticsearch_mode=%22snapshot%22"
+                },
+                {
+                    "datafield_id": 522,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 523,
+                    "is_required": "n",
+                    "var_filter": null
+                },
+                {
+                    "datafield_id": 524,
+                    "is_required": "n",
+                    "var_filter": null
+                }
+            ],
+            "imports": [
+                "Default Service"
+            ],
+            "object_name": "Elasticsearch",
+            "object_type": "template",
+        }
+    },
+    "DataList": {
+        "Elasticsearch Modes": {
+            "entries": [
+                {
+                    "entry_name": "health",
+                    "entry_value": "health",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "ingest",
+                    "entry_value": "ingest",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "query",
+                    "entry_value": "query",
+                    "format": "string",
+                    "allowed_roles": null
+                },
+                {
+                    "entry_name": "snapshot",
+                    "entry_value": "snapshot",
+                    "format": "string",
+                    "allowed_roles": null
+                }
+            ],
+            "list_name": "Elasticsearch Modes",
+            "owner": "admin",
+        }
+    },
+    "Datafield": {
+        "516": {
+            "varname": "elasticsearch_ca",
+            "caption": "Elasticsearch CA File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "517": {
+            "varname": "elasticsearch_cert",
+            "caption": "Elasticsearch Certificate File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "526": {
+            "varname": "elasticsearch_ingest_critical",
+            "caption": "Critical Threshold",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "528": {
+            "varname": "elasticsearch_ingest_pipeline",
+            "caption": "Pipeline Name",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "527": {
+            "varname": "elasticsearch_ingest_warning",
+            "caption": "Warning Threshold",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "518": {
+            "varname": "elasticsearch_insecure",
+            "caption": "Skip Verification",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "519": {
+            "varname": "elasticsearch_key",
+            "caption": "Elasticsearch Key File",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "525": {
+            "varname": "elasticsearch_mode",
+            "caption": "Mode for the Checkplugin",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeDatalist",
+            "format": null,
+            "settings": {
+                "behavior": "strict",
+                "data_type": "string",
+                "datalist": "Elasticsearch Modes"
+            },
+            "category": null
+        },
+        "520": {
+            "varname": "elasticsearch_password",
+            "caption": "Password for HTTP Basic Auth",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "hidden"
+            },
+            "category": null
+        },
+        "521": {
+            "varname": "elasticsearch_port",
+            "caption": "Port of the Elasticsearch Instance",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "534": {
+            "varname": "elasticsearch_query_critical",
+            "caption": "Critical Threshold",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "530": {
+            "varname": "elasticsearch_query_index",
+            "caption": "Index Name",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "531": {
+            "varname": "elasticsearch_query_msgkey",
+            "caption": "Message of messagekey",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "532": {
+            "varname": "elasticsearch_query_msglen",
+            "caption": "Number of characters to display",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "529": {
+            "varname": "elasticsearch_query_query",
+            "caption": "Elasticsearch Query",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "533": {
+            "varname": "elasticsearch_query_warning",
+            "caption": "Warning Threshold",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "535": {
+            "varname": "elasticsearch_snapshot_all",
+            "caption": "Check all retrieved Snapshots",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "537": {
+            "varname": "elasticsearch_snapshot_number",
+            "caption": "Check latest N number snapshots",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "538": {
+            "varname": "elasticsearch_snapshot_repository",
+            "caption": "Snapshot Repository Names",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "539": {
+            "varname": "elasticsearch_snapshot_snapshot",
+            "caption": "Snapshot Name",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "536": {
+            "varname": "elasticsearch_snapshot_state",
+            "caption": "State to assign when no snapshots are found",
+            "description": "Possible Values are 0, 1, 2, 3, OK, WARNING, CRITICAL, UNKNOWN\r\nDefaults to UNKNOWN",
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "522": {
+            "varname": "elasticsearch_timeout",
+            "caption": "Timeout in seconds",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        },
+        "523": {
+            "varname": "elasticsearch_tls",
+            "caption": "Use a HTTPS Connection",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeBoolean",
+            "format": null,
+            "settings": {},
+            "category": null
+        },
+        "524": {
+            "varname": "elasticsearch_user",
+            "caption": "Username for HTTP Basic Authentication",
+            "description": null,
+            "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+            "format": null,
+            "settings": {
+                "visibility": "visible"
+            },
+            "category": null
+        }
+    }
+}
