@@ -75,6 +75,8 @@ and then compare it to the given thresholds
 With the `--msgkey` flag extracts a value from a given field and shows in in the output.
 This is intended to show message/body/log field values in the plugin output.
 
+The `--index` flag supports index patterns like `my-index-*` and `index1,index2`.
+
 ```
 Usage:
   check_elasticsearch query [flags]
@@ -129,11 +131,11 @@ Examples:
 ```
 check_elasticsearch ingest --failed-warning 5 --failed-critical 10
 [WARNING] - Ingest operations may not be alright
-  \_[WARNING] Failed ingest operations for mypipeline: 6; | pipelines.mypipeline.failed=6c
+  \_[WARNING] Number of failed ingest operations for mypipeline: 6; | pipelines.mypipeline.failed=6c
 
 check_elasticsearch ingest --pipeline foobar
 [OK] - Ingest operations alright
-  \_[OK] Failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
+  \_[OK] Number of failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
 ```
 
 ### Snapshot
@@ -175,7 +177,6 @@ $ check_elasticsearch snapshot --all -r myrepo
 $ check_elasticsearch snapshot --number 5 -s mysnapshot
 [WARNING] - At least one evaluated snapshot is in state PARTIAL
 ```
-
 
 ## License
 
