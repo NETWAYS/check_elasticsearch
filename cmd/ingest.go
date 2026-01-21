@@ -17,6 +17,8 @@ type PipelineConfig struct {
 	FailedCritical string
 }
 
+const ingestOutput = "%s Number of failed ingest operations for %s: %g;"
+
 var cliPipelineConfig PipelineConfig
 
 var ingestCmd = &cobra.Command{
@@ -71,13 +73,13 @@ var ingestCmd = &cobra.Command{
 				summary.WriteString("\n \\_")
 				if failedCrit.DoesViolate(pp.Failed) {
 					states = append(states, check.Critical)
-					summary.WriteString(fmt.Sprintf("[CRITICAL] Failed ingest operations for %s: %g;", pipelineName, pp.Failed))
+					summary.WriteString(fmt.Sprintf(ingestOutput, "[CRITICAL]", pipelineName, pp.Failed))
 				} else if failedWarn.DoesViolate(pp.Failed) {
 					states = append(states, check.Warning)
-					summary.WriteString(fmt.Sprintf("[WARNING] Failed ingest operations for %s: %g;", pipelineName, pp.Failed))
+					summary.WriteString(fmt.Sprintf(ingestOutput, "[WARNING]", pipelineName, pp.Failed))
 				} else {
 					states = append(states, check.OK)
-					summary.WriteString(fmt.Sprintf("[OK] Failed ingest operations for %s: %g;", pipelineName, pp.Failed))
+					summary.WriteString(fmt.Sprintf(ingestOutput, "[OK]", pipelineName, pp.Failed))
 				}
 
 				perfList.Add(&perfdata.Perfdata{
@@ -122,7 +124,6 @@ func init() {
 
 	fs.StringVar(&cliPipelineConfig.PipelineName, "pipeline", "",
 		"Pipeline Name")
-
 	fs.StringVar(&cliPipelineConfig.FailedWarning, "failed-warning", "10",
 		"Warning threshold for failed ingest operations. Use min:max for a range.")
 	fs.StringVar(&cliPipelineConfig.FailedCritical, "failed-critical", "20",
