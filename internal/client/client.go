@@ -18,7 +18,6 @@ type Client struct {
 }
 
 func NewClient(url string, rt http.RoundTripper) *Client {
-	// Small wrapper
 	c := &http.Client{
 		Transport: rt,
 	}
@@ -29,7 +28,7 @@ func NewClient(url string, rt http.RoundTripper) *Client {
 	}
 }
 
-func (c *Client) Health() (r *es.HealthResponse, err error) {
+func (c *Client) Health() (*es.HealthResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -37,38 +36,36 @@ func (c *Client) Health() (r *es.HealthResponse, err error) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 
+	r := &es.HealthResponse{}
+
 	if err != nil {
-		err = fmt.Errorf("error creating request: %w", err)
-		return
+		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
 	resp, err := c.Client.Do(req)
 
 	if err != nil {
-		err = fmt.Errorf("could not fetch cluster health: %w", err)
-		return
+		return r, fmt.Errorf("could not fetch cluster health: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("request failed for cluster health: %s", resp.Status)
-		return
+		return r, fmt.Errorf("request failed for cluster health: %s", resp.Status)
 	}
-
-	r = &es.HealthResponse{}
 
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(r)
 
 	if err != nil {
-		err = fmt.Errorf("could not decode health json: %w", err)
-		return
+		return r, fmt.Errorf("error parsing the response body: %w", err)
 	}
 
-	return
+	return r, nil
 }
 
-func (c *Client) SearchMessages(index string, query string, messageKey string) (total uint, messages []string, err error) {
+// SearchMessages runs a query_string query and returns the
+// count of documents and the requesed values via messageKey
+func (c *Client) SearchMessages(index string, query string, messageKey string) (uint, []string, error) {
 	queryBody := es.SearchRequest{
 		Query: es.Query{
 			QueryString: &es.QueryString{
@@ -77,12 +74,15 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		},
 	}
 
+	var total uint
+
+	var messages []string
+
 	data, err := json.Marshal(queryBody)
 	body := bytes.NewReader(data)
 
 	if err != nil {
-		err = fmt.Errorf("error encoding query: %w", err)
-		return
+		return total, messages, fmt.Errorf("error encoding query: %w", err)
 	}
 
 	u, _ := url.JoinPath(c.URL, index, "/_search")
@@ -95,8 +95,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	req.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
-		err = fmt.Errorf("error creating request: %w", err)
-		return
+		return total, messages, fmt.Errorf("error creating request: %w", err)
 	}
 
 	p := req.URL.Query()
@@ -108,8 +107,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	resp, err := c.Client.Do(req)
 
 	if err != nil {
-		err = fmt.Errorf("could not execute search request: %w", err)
-		return
+		return total, messages, fmt.Errorf("could not execute search request: %w", err)
 	}
 
 	var response es.SearchResponse
@@ -118,15 +116,13 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	err = json.NewDecoder(resp.Body).Decode(&response)
 
 	if err != nil {
-		err = fmt.Errorf("error parsing the response body: %w", err)
-		return
+		return total, messages, fmt.Errorf("error parsing the response body: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		queryErrors := response.GetErrors()
-		err = fmt.Errorf("failed to run query: %s", queryErrors)
 
-		return
+		return total, messages, fmt.Errorf("failed to run query: %s", queryErrors)
 	}
 
 	total = response.Hits.Total.Value
@@ -141,15 +137,14 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		if value, ok := hit.Source[messageKey]; ok {
 			messages = append(messages, fmt.Sprint(value))
 		} else {
-			err = fmt.Errorf("message does not contain key '%s': %s", messageKey, hit.ID)
-			return
+			return total, messages, fmt.Errorf("document does not contain key '%s': %s", messageKey, hit.ID)
 		}
 	}
 
-	return
+	return total, messages, nil
 }
 
-func (c *Client) NodeStats() (r *es.ClusterStats, err error) {
+func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -157,34 +152,30 @@ func (c *Client) NodeStats() (r *es.ClusterStats, err error) {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 
+	r := &es.ClusterStats{}
+
 	if err != nil {
-		err = fmt.Errorf("error creating request: %w", err)
-		return
+		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
 	resp, err := c.Client.Do(req)
 
 	if err != nil {
-		err = fmt.Errorf("could not fetch cluster nodes statistics: %w", err)
-		return
+		return r, fmt.Errorf("could not fetch cluster nodes statistics: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("request failed for cluster nodes statistics: %s", resp.Status)
-		return
+		return r, fmt.Errorf("request failed for cluster nodes statistics: %s", resp.Status)
 	}
-
-	r = &es.ClusterStats{}
 
 	defer resp.Body.Close()
 	err = json.NewDecoder(resp.Body).Decode(r)
 
 	if err != nil {
-		err = fmt.Errorf("could not decode nodes statistics json: %w", err)
-		return
+		return r, fmt.Errorf("error parsing the response body: %w", err)
 	}
 
-	return
+	return r, nil
 }
 
 func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotResponse, error) {

@@ -21,7 +21,6 @@ linters:
     - nakedret
     - nlreturn
     - nolintlint
-    - nonamedreturns
     - tagliatelle
     - varnamelen
     - wrapcheck
