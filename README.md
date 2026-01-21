@@ -67,7 +67,7 @@ $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
 
 ### Query
 
-Checks the total hits/results of an Elasticsearch query.
+Checks the total hits/results of an Elasticsearch query (using a query_string query type).
 
 Hint: The plugin is currently capable to return the total hits of documents based on a provided query string.
 
@@ -76,7 +76,7 @@ Usage:
   check_elasticsearch query [flags]
 
 Flags:
-  -q, --query string      The Elasticsearch query
+  -q, --query string      The Elasticsearch query to run (query_string type syntax)
   -I, --index string      Name of the Index which will be used (default "_all")
   -k, --msgkey string     Message of messagekey to display
   -m, --msglen int        Number of characters to display in the latest message (default 80)
