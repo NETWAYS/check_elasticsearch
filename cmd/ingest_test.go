@@ -46,7 +46,7 @@ func TestIngestCmd(t *testing.T) {
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte(`{"_nodes":{"total":1,"successful":1,"failed":0},"cluster_name":"clustername","nodes":{"mm3U-u0WTCeuZ325vZGY2w":{"ip":"127.0.0.1:9300","ingest":{"total":{"count":10,"time_in_millis":0,"current":3,"failed":5},"pipelines":{"foobar":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]},"mypipeline":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]}}}}}}`))
 			})),
-			args:     []string{"run", "../main.go", "ingest", "--pipeline", "foobar"},
+			args:     []string{"run", "../main.go", "ingest", "--pipeline", "foobar", "--pipeline", "notpresent"},
 			expected: "[OK] - Ingest operations alright \n \\_[OK] Number of failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c pipelines.foobar.count=10c pipelines.foobar.current=3c\n",
 		},
 		{

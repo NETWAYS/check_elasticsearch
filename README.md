@@ -118,7 +118,7 @@ Usage:
   check_elasticsearch ingest [flags]
 
 Flags:
-      --pipeline string          Pipeline Name
+      --pipeline stringArray     Name of the pipeline to check. Can be used multiple times and supports regex.
       --failed-warning string    Warning threshold for failed ingest operations. Use min:max for a range. (default "10")
       --failed-critical string   Critical threshold for failed ingest operations. Use min:max for a range. (default "20")
   -h, --help                     help for ingest

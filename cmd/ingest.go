@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/NETWAYS/go-check"
@@ -12,7 +13,7 @@ import (
 
 // To store the CLI parameters.
 type PipelineConfig struct {
-	PipelineName   string
+	PipelineNames  []string
 	FailedWarning  string
 	FailedCritical string
 }
@@ -63,11 +64,15 @@ var ingestCmd = &cobra.Command{
 		for _, node := range stats.Nodes {
 			for pipelineName, pp := range node.Ingest.Pipelines {
 
-				// Skip if pipeline name doesn't match
-				if cliPipelineConfig.PipelineName != "" {
-					if cliPipelineConfig.PipelineName != pipelineName {
-						continue
-					}
+				pipelineMatched, regexErr := matches(pipelineName, cliPipelineConfig.PipelineNames)
+
+				if regexErr != nil {
+					check.ExitRaw(check.Unknown, "Invalid regular expression provided:", regexErr.Error())
+				}
+
+				if !pipelineMatched && len(cliPipelineConfig.PipelineNames) >= 1 {
+					// If the pipeline doesn't matches a regex from the list we can skip it.
+					continue
 				}
 
 				summary.WriteString("\n \\_")
@@ -122,12 +127,29 @@ func init() {
 
 	fs := ingestCmd.Flags()
 
-	fs.StringVar(&cliPipelineConfig.PipelineName, "pipeline", "",
-		"Pipeline Name")
+	fs.StringArrayVar(&cliPipelineConfig.PipelineNames, "pipeline", []string{},
+		"Name of the pipeline to check. Can be used multiple times and supports regex.")
 	fs.StringVar(&cliPipelineConfig.FailedWarning, "failed-warning", "10",
 		"Warning threshold for failed ingest operations. Use min:max for a range.")
 	fs.StringVar(&cliPipelineConfig.FailedCritical, "failed-critical", "20",
 		"Critical threshold for failed ingest operations. Use min:max for a range.")
 
 	fs.SortFlags = false
+}
+
+// Matches a list of regular expressions against a string.
+func matches(input string, regexToMatch []string) (bool, error) {
+	for _, regex := range regexToMatch {
+		re, err := regexp.Compile(regex)
+
+		if err != nil {
+			return false, err
+		}
+
+		if re.MatchString(input) {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
