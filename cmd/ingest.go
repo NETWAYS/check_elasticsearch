@@ -90,6 +90,8 @@ var ingestCmd = &cobra.Command{
 				perfList.Add(&perfdata.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.failed", pipelineName),
 					Uom:   "c",
+					Warn:  failedWarn,
+					Crit:  failedCrit,
 					Value: pp.Failed})
 				perfList.Add(&perfdata.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.count", pipelineName),
@@ -97,7 +99,6 @@ var ingestCmd = &cobra.Command{
 					Value: pp.Count})
 				perfList.Add(&perfdata.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.current", pipelineName),
-					Uom:   "c",
 					Value: pp.Current})
 			}
 		}
