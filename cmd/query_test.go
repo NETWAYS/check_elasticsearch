@@ -66,7 +66,6 @@ func TestQueryCmd(t *testing.T) {
 exit status 2
 `,
 		},
-
 		{
 			name: "query-ok",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +78,17 @@ exit status 2
 One
 One
  | total=2;3;50
+`,
+		},
+		{
+			name: "query-ok-no-msgkey",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("X-Elastic-Product", "Elasticsearch")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":2,"relation":"eq"},"max_score":1.0,"hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":1.0,"_source":{"title":"One","tags":["ruby"]}},{"_index":"my_index","_type":"_doc","_id":"y0i9voQB87C1kW3I9y74","_score":1.0,"_source":{"title":"One","tags":["ruby"]}}]}}`))
+			})),
+			args: []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "-w", "3"},
+			expected: `[OK] - Total hits: 2 | total=2;3;50
 `,
 		},
 		{
