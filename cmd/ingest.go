@@ -18,7 +18,7 @@ type PipelineConfig struct {
 	FailedCritical string
 }
 
-const ingestOutput = "%s Number of failed ingest operations for %s: %g;"
+const ingestOutput = "%s Number of failed ingest operations for %s: %g"
 
 var cliPipelineConfig PipelineConfig
 

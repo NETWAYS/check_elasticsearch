@@ -131,11 +131,11 @@ Examples:
 ```
 check_elasticsearch ingest --failed-warning 5 --failed-critical 10
 [WARNING] - Ingest operations may not be alright
-  \_[WARNING] Number of failed ingest operations for mypipeline: 6; | pipelines.mypipeline.failed=6c
+  \_[WARNING] Number of failed ingest operations for mypipeline: 6 | pipelines.mypipeline.failed=6c
 
 check_elasticsearch ingest --pipeline foobar
 [OK] - Ingest operations alright
-  \_[OK] Number of failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c
+  \_[OK] Number of failed ingest operations for foobar: 5 | pipelines.foobar.failed=5c
 ```
 
 ### Snapshot
