@@ -97,7 +97,6 @@ var ingestCmd = &cobra.Command{
 					Value: pp.Count})
 				perfList.Add(&perfdata.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.current", pipelineName),
-					Uom:   "c",
 					Value: pp.Current})
 			}
 		}

@@ -38,7 +38,7 @@ func TestIngestCmd(t *testing.T) {
 				w.Write([]byte(`{"_nodes":{"total":1,"successful":1,"failed":0},"cluster_name":"clustername","nodes":{"node1":{"ip":"127.0.0.1:9300","ingest":{"total":{"count":10,"time_in_millis":0,"current":3,"failed":5},"pipelines":{"mypipeline":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]}}}}}}`))
 			})),
 			args:     []string{"run", "../main.go", "ingest"},
-			expected: "[OK] - Ingest operations alright \n \\_[OK] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3c\n",
+			expected: "[OK] - Ingest operations alright \n \\_[OK] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3\n",
 		},
 		{
 			name: "ingest-ok-with-name",
@@ -47,7 +47,7 @@ func TestIngestCmd(t *testing.T) {
 				w.Write([]byte(`{"_nodes":{"total":1,"successful":1,"failed":0},"cluster_name":"clustername","nodes":{"mm3U-u0WTCeuZ325vZGY2w":{"ip":"127.0.0.1:9300","ingest":{"total":{"count":10,"time_in_millis":0,"current":3,"failed":5},"pipelines":{"foobar":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]},"mypipeline":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]}}}}}}`))
 			})),
 			args:     []string{"run", "../main.go", "ingest", "--pipeline", "foobar", "--pipeline", "notpresent"},
-			expected: "[OK] - Ingest operations alright \n \\_[OK] Number of failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c pipelines.foobar.count=10c pipelines.foobar.current=3c\n",
+			expected: "[OK] - Ingest operations alright \n \\_[OK] Number of failed ingest operations for foobar: 5; | pipelines.foobar.failed=5c pipelines.foobar.count=10c pipelines.foobar.current=3\n",
 		},
 		{
 			name: "ingest-warn",
@@ -56,7 +56,7 @@ func TestIngestCmd(t *testing.T) {
 				w.Write([]byte(`{"_nodes":{"total":1,"successful":1,"failed":0},"cluster_name":"clustername","nodes":{"node1":{"ip":"127.0.0.1:9300","ingest":{"total":{"count":10,"time_in_millis":0,"current":3,"failed":5},"pipelines":{"mypipeline":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]}}}}}}`))
 			})),
 			args:     []string{"run", "../main.go", "ingest", "--failed-warning", "3"},
-			expected: "[WARNING] - Ingest operations may not be alright \n \\_[WARNING] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3c\nexit status 1\n",
+			expected: "[WARNING] - Ingest operations may not be alright \n \\_[WARNING] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3\nexit status 1\n",
 		},
 		{
 			name: "ingest-crit",
@@ -65,7 +65,7 @@ func TestIngestCmd(t *testing.T) {
 				w.Write([]byte(`{"_nodes":{"total":1,"successful":1,"failed":0},"cluster_name":"clustername","nodes":{"node1":{"ip":"127.0.0.1:9300","ingest":{"total":{"count":10,"time_in_millis":0,"current":3,"failed":5},"pipelines":{"mypipeline":{"count":10,"time_in_millis":0,"current":3,"failed":5,"processors":[{"set":{"type":"set","stats":{"count":0,"time_in_millis":0,"current":0,"failed":0}}}]}}}}}}`))
 			})),
 			args:     []string{"run", "../main.go", "ingest", "--failed-critical", "3"},
-			expected: "[CRITICAL] - Ingest operations not alright \n \\_[CRITICAL] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3c\nexit status 2\n",
+			expected: "[CRITICAL] - Ingest operations not alright \n \\_[CRITICAL] Number of failed ingest operations for mypipeline: 5; | pipelines.mypipeline.failed=5c pipelines.mypipeline.count=10c pipelines.mypipeline.current=3\nexit status 2\n",
 		},
 		{
 			name: "ingest-invalid",
