@@ -132,6 +132,12 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	total = response.Hits.Total.Value
 
 	for _, hit := range response.Hits.Hits {
+		// When the user does not request a field we skip here
+		if messageKey == "" {
+			continue
+		}
+
+		// Append the requested values if a key is given
 		if value, ok := hit.Source[messageKey]; ok {
 			messages = append(messages, fmt.Sprint(value))
 		} else {

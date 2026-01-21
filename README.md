@@ -67,9 +67,13 @@ $ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
 
 ### Query
 
-Checks the total hits/results of an Elasticsearch query (using a query_string query type).
+Checks the total hits/counts of an Elasticsearch query (using a query_string query type).
 
-Hint: The plugin is currently capable to return the total hits of documents based on a provided query string.
+The plugin can count the number of documents based on a provided query string
+and then compare it to the given thresholds
+
+With the `--msgkey` flag extracts a value from a given field and shows in in the output.
+This is intended to show message/body/log field values in the plugin output.
 
 ```
 Usage:
@@ -78,10 +82,10 @@ Usage:
 Flags:
   -q, --query string      The Elasticsearch query to run (query_string type syntax)
   -I, --index string      Name of the Index which will be used (default "_all")
-  -k, --msgkey string     Message of messagekey to display
-  -m, --msglen int        Number of characters to display in the latest message (default 80)
-  -w, --warning string    Warning threshold for total hits (default "20")
-  -c, --critical string   Critical threshold for total hits (default "50")
+  -k, --msgkey string     Name of a field to display in the output (e.g. a message body)
+  -m, --msglen int        Maximum number of characters to display from the requested field (default 80)
+  -w, --warning string    Warning count threshold for total hits (default "20")
+  -c, --critical string   Critical count threshold for total hits (default "50")
   -h, --help              help for query
 ```
 

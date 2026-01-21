@@ -96,9 +96,9 @@ func init() {
 	fs.StringVarP(&cliQueryConfig.Index, "index", "I", "_all",
 		"Name of the Index which will be used")
 	fs.StringVarP(&cliQueryConfig.MessageKey, "msgkey", "k", "",
-		"Message of messagekey to display")
+		"Name of a field to display in the output (e.g. a message body)")
 	fs.IntVarP(&cliQueryConfig.MessageLen, "msglen", "m", 80,
-		"Number of characters to display in the latest message")
+		"Maximum number of characters to display from the requested field (default 80)")
 	fs.StringVarP(&cliQueryConfig.Warning, "warning", "w", "20",
 		"Warning threshold for total hits")
 	fs.StringVarP(&cliQueryConfig.Critical, "critical", "c", "50",
