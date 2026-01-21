@@ -49,7 +49,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			check.ExitError(err)
 		}
 
-		output.WriteString(fmt.Sprintf("Total hits: %d", total))
+		output.WriteString(fmt.Sprintf("Search query hits: %d", total))
 
 		if len(messages) > 0 {
 			output.WriteString("\n")
@@ -80,7 +80,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 		}
 
 		p := perfdata.PerfdataList{
-			{Label: "total", Value: total, Warn: warn, Crit: crit},
+			{Label: "query_hits", Value: total, Warn: warn, Crit: crit, Uom: "c"},
 		}
 
 		check.ExitRaw(rc, output.String(), "|", p.String())

@@ -95,16 +95,16 @@ Search for total hits without any message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs"
-[CRITICAL] - Total hits: 14074 | total=14074;20;50
+[CRITICAL] - Search query hits: 14074 | query_hits=14074c;20;50
 ```
 
 Search for total hits with message:
 
 ```
 $ check_elasticsearch query -q "event.dataset:sample_web_logs and @timestamp:[now-5m TO now]" -I "kibana_sample_data_logs" -k "message"
-[CRITICAL] - Total hits: 14074
+[CRITICAL] - Search query hits: 14074
 30.156.16.163 - - [2018-09-01T12:44:53.756Z] "GET /wp-content/plugins/video-play
- | total=14074;20;50
+ | query_hits=14074c;20;50
 ```
 
 ### Ingest
