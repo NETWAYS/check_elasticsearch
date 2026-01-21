@@ -50,7 +50,7 @@ func TestQueryCmd(t *testing.T) {
 				w.Write([]byte(`{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"kibaa_sample_data_logs","index_uuid":"_na_","index":"example"}],"type":"index_not_found_exception","reason":"no such index [example]","resource.type":"index_or_alias","resource.id":"example","index_uuid":"_na_","index":"example"},"status":404}`))
 			})),
 			args:     []string{"run", "../main.go", "query", "-q", "foo", "-I", "foo"},
-			expected: "[UNKNOWN] - request failed for search: 404 Not Found (*errors.errorString)\nexit status 3\n",
+			expected: "[UNKNOWN] - failed to run query: no such index [example] (*errors.errorString)\nexit status 3\n",
 		},
 		{
 			name: "query-example",

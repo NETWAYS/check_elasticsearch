@@ -1,5 +1,10 @@
 package elasticsearch
 
+import (
+	"slices"
+	"strings"
+)
+
 type HealthResponse struct {
 	ClusterName                 string  `json:"cluster_name"`
 	Status                      string  `json:"status"`
@@ -20,7 +25,36 @@ type HealthResponse struct {
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html#search-api-response-body
 type SearchResponse struct {
-	Hits SearchHits `json:"hits"`
+	Hits  SearchHits `json:"hits"`
+	Error struct {
+		RootCause []ErrorRootCause `json:"root_cause"`
+	}
+}
+
+type ErrorRootCause struct {
+	Type   string `json:"type"`
+	Reason string `json:"reason"`
+}
+
+func (r *SearchResponse) GetErrors() string {
+	if len(r.Error.RootCause) == 0 {
+		return ""
+	}
+
+	messages := make([]string, 0, len(r.Error.RootCause))
+
+	for _, rc := range r.Error.RootCause {
+		if rc.Reason != "" {
+			// Deduplication
+			if slices.Contains(messages, rc.Reason) {
+				continue
+			}
+
+			messages = append(messages, rc.Reason)
+		}
+	}
+
+	return strings.Join(messages, ", ")
 }
 
 type SearchHits struct {
@@ -33,10 +67,10 @@ type SearchTotal struct {
 }
 
 type SearchHit struct {
-	Index  string                 `json:"_index"`
-	Type   string                 `json:"_type"`
-	Source map[string]interface{} `json:"_source"`
-	ID     string                 `json:"_id"`
+	Index  string         `json:"_index"`
+	Type   string         `json:"_type"`
+	Source map[string]any `json:"_source"`
+	ID     string         `json:"_id"`
 }
 
 type SearchRequest struct {

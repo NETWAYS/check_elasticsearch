@@ -112,11 +112,6 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		return
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("request failed for search: %s", resp.Status)
-		return
-	}
-
 	var response es.SearchResponse
 
 	defer resp.Body.Close()
@@ -124,6 +119,13 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 
 	if err != nil {
 		err = fmt.Errorf("error parsing the response body: %w", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		queryErrors := response.GetErrors()
+		err = fmt.Errorf("failed to run query: %s", queryErrors)
+
 		return
 	}
 
