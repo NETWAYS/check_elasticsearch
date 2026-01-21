@@ -24,8 +24,8 @@ var (
 
 var queryCmd = &cobra.Command{
 	Use:   "query",
-	Short: "Checks the total hits/results of an Elasticsearch query",
-	Long: `Checks the total hits/results of an Elasticsearch query.
+	Short: "Checks the total hits/results of an Elasticsearch query (using a query_string query type)",
+	Long: `Checks the total hits/results of an Elasticsearch query (using a query_string query type).
 The plugin is currently capable to return the total hits of documents based on a provided query string.
 
 For more information to the syntax, please visit:
@@ -92,7 +92,7 @@ func init() {
 
 	fs := queryCmd.Flags()
 	fs.StringVarP(&cliQueryConfig.Query, "query", "q", "",
-		"The Elasticsearch query")
+		"The Elasticsearch query to run (query_string type syntax)")
 	fs.StringVarP(&cliQueryConfig.Index, "index", "I", "_all",
 		"Name of the Index which will be used")
 	fs.StringVarP(&cliQueryConfig.MessageKey, "msgkey", "k", "",
