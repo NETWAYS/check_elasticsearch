@@ -47,6 +47,8 @@ func init() {
 		"Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)")
 	pfs.StringVarP(&cliConfig.Password, "password", "P", "",
 		"Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)")
+	pfs.StringVarP(&cliConfig.Bearer, "bearer", "b", "",
+		"Specify the Bearer Token for authentication (CHECK_ELASTICSEARCH_BEARER)")
 	pfs.BoolVar(&cliConfig.Insecure, "insecure", false,
 		"Skip the verification of the server's TLS certificate")
 	pfs.StringVarP(&cliConfig.CAFile, "ca-file", "", "",

@@ -20,6 +20,7 @@ Flags:
   -H, --hostname stringArray   URL of an Elasticsearch instance. Can be used multiple times. (default [http://localhost:9200])
   -U, --username string        Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)
   -P, --password string        Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
+  -b, --bearer string          Specify the Bearer Token for authentication (CHECK_ELASTICSEARCH_BEARER)
       --insecure               Skip the verification of the server's TLS certificate
       --ca-file string         Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
       --cert-file string       Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)

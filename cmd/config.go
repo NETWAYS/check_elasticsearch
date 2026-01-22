@@ -16,7 +16,7 @@ import (
 
 type Config struct {
 	Hostname []string
-	Bearer   string // Currently unused in CLI
+	Bearer   string `env:"CHECK_ELASTICSEARCH_BEARER"`
 	CAFile   string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
 	CertFile string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
 	KeyFile  string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
