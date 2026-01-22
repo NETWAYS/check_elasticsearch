@@ -3,7 +3,6 @@ package cmd
 import (
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os/exec"
 	"strings"
 	"testing"
@@ -11,11 +10,11 @@ import (
 
 func TestHealth_ConnectionRefused(t *testing.T) {
 
-	cmd := exec.Command("go", "run", "../main.go", "health", "--port", "9999")
+	cmd := exec.Command("go", "run", "../main.go", "health", "--hostname", "http://localhost:9999")
 	out, _ := cmd.CombinedOutput()
 
 	actual := string(out)
-	expected := "[UNKNOWN] - could not fetch cluster health: Get \"http://localhost:9999/_cluster/health\": dial"
+	expected := "[UNKNOWN] - could not fetch cluster health: no node reachable (*errors.errorString)"
 
 	if !strings.Contains(actual, expected) {
 		t.Error("\nActual: ", actual, "\nExpected: ", expected)
@@ -116,9 +115,7 @@ func TestHealthCmd(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			defer test.server.Close()
 
-			// We need the random Port extracted
-			u, _ := url.Parse(test.server.URL)
-			cmd := exec.Command("go", append(test.args, "--port", u.Port())...)
+			cmd := exec.Command("go", append(test.args, "--hostname", test.server.URL)...)
 			out, _ := cmd.CombinedOutput()
 
 			actual := string(out)

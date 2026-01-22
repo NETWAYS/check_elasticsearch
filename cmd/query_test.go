@@ -3,7 +3,6 @@ package cmd
 import (
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os/exec"
 	"strings"
 	"testing"
@@ -11,12 +10,12 @@ import (
 
 func TestQuery_ConnectionRefused(t *testing.T) {
 
-	cmd := exec.Command("go", "run", "../main.go", "query", "--port", "9999")
+	cmd := exec.Command("go", "run", "../main.go", "query", "--hostname", "http://localhost:9999")
 	out, _ := cmd.CombinedOutput()
 
 	actual := string(out)
 
-	expected := "[UNKNOWN] - could not execute search request: Get \"http://localhost:9999/_all/_search?size=1&track_total_hits=true\": dial"
+	expected := "[UNKNOWN] - could not execute search request: no node reachable (*errors.errorString)"
 
 	if !strings.Contains(actual, expected) {
 		t.Error("\nActual: ", actual, "\nExpected: ", expected)
@@ -137,9 +136,7 @@ exit status 1
 		t.Run(test.name, func(t *testing.T) {
 			defer test.server.Close()
 
-			// We need the random Port extracted
-			u, _ := url.Parse(test.server.URL)
-			cmd := exec.Command("go", append(test.args, "--port", u.Port())...)
+			cmd := exec.Command("go", append(test.args, "--hostname", test.server.URL)...)
 			out, _ := cmd.CombinedOutput()
 
 			actual := string(out)
