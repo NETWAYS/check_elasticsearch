@@ -26,6 +26,11 @@ The cluster health status is:
 		}
 
 		var rc int
+		// How we map cluster states:
+		// green = 0
+		// yellow = 1
+		// red = 2
+		// unknown = 3
 		switch health.Status {
 		case "green":
 			rc = check.OK
@@ -42,12 +47,7 @@ The cluster health status is:
 			output = "Cluster " + health.ClusterName + " is " + health.Status
 		}
 
-		// green = 0
-		// yellow = 1
-		// red = 2
-		// unknown = 3
 		p := perfdata.PerfdataList{
-			{Label: "status", Value: rc},
 			{Label: "nodes", Value: health.NumberOfNodes},
 			{Label: "data_nodes", Value: health.NumberOfDataNodes},
 			{Label: "active_primary_shards", Value: health.ActivePrimaryShards},
