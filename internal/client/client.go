@@ -29,6 +29,8 @@ func NewClient(urls []*url.URL, rt http.RoundTripper) *Client {
 	}
 }
 
+// Perform wraps the Client's HTTP call so that we can try all given
+// nodes in case one node is not reachable
 func (c *Client) Perform(req *http.Request) (*http.Response, error) {
 	originalPath := req.URL.String()
 
@@ -51,6 +53,7 @@ func (c *Client) Perform(req *http.Request) (*http.Response, error) {
 	return &http.Response{}, errors.New("no node reachable")
 }
 
+// Health retrieves the Cluster's health state
 func (c *Client) Health() (*es.HealthResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -167,6 +170,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	return total, messages, nil
 }
 
+// NodeStates retrieves the Cluster's node state
 func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -201,6 +205,7 @@ func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	return r, nil
 }
 
+// Snapshot retrieves the cluster's snapshot states
 func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
