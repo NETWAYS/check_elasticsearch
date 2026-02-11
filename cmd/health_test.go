@@ -50,6 +50,23 @@ func TestHealthCmd(t *testing.T) {
 			expected: "[OK] - Cluster test is green | nodes=1 data_nodes=1 active_primary_shards=3 active_shards=3\n",
 		},
 		{
+			name: "health-bearer-ok",
+			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				token := r.Header.Get("Authorization")
+				if token == "Bearer secret" {
+					// Just for testing, this is now how to handle tokens properly
+					w.Header().Set("X-Elastic-Product", "Elasticsearch")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"cluster_name":"test","status":"green","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":3,"active_shards":3,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}`))
+					return
+				}
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte(`The Authorization header wasn't set`))
+			})),
+			args:     []string{"run", "../main.go", "--bearer", "secret", "health"},
+			expected: "[OK] - Cluster test is green | nodes=1 data_nodes=1 active_primary_shards=3 active_shards=3\n",
+		},
+		{
 			name: "health-invalid",
 			server: httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-Elastic-Product", "Elasticsearch")
