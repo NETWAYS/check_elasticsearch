@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -14,25 +15,50 @@ import (
 
 type Client struct {
 	Client http.Client
-	URL    string
+	URLs   []*url.URL
 }
 
-func NewClient(url string, rt http.RoundTripper) *Client {
+func NewClient(urls []*url.URL, rt http.RoundTripper) *Client {
 	c := &http.Client{
 		Transport: rt,
 	}
 
 	return &Client{
-		URL:    url,
+		URLs:   urls,
 		Client: *c,
 	}
 }
 
+// Perform wraps the Client's HTTP call so that we can try all given
+// nodes in case one node is not reachable
+func (c *Client) Perform(req *http.Request) (*http.Response, error) {
+	originalPath := req.URL.String()
+
+	for _, hostURL := range c.URLs {
+		// For each URL take the request, prepend the URL
+		u, _ := url.JoinPath(hostURL.String(), originalPath)
+
+		req.URL, _ = url.Parse(u)
+
+		resp, errDo := c.Client.Do(req)
+
+		if errDo != nil {
+			// If there's an error we try the next host
+			continue
+		}
+
+		return resp, errDo
+	}
+
+	return &http.Response{}, errors.New("no node reachable")
+}
+
+// Health retrieves the Cluster's health state
 func (c *Client) Health() (*es.HealthResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	u, _ := url.JoinPath(c.URL, "/_cluster/health")
+	u := "/_cluster/health"
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 
@@ -42,10 +68,10 @@ func (c *Client) Health() (*es.HealthResponse, error) {
 		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
-	resp, err := c.Client.Do(req)
+	resp, err := c.Perform(req)
 
 	if err != nil {
-		return r, fmt.Errorf("could not fetch cluster health: %w", err)
+		return r, fmt.Errorf("could not fetch cluster health: %s", err.Error())
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -85,7 +111,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 		return total, messages, fmt.Errorf("error encoding query: %w", err)
 	}
 
-	u, _ := url.JoinPath(c.URL, index, "/_search")
+	u := index + "/_search"
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -104,10 +130,10 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 
 	req.URL.RawQuery = p.Encode()
 
-	resp, err := c.Client.Do(req)
+	resp, err := c.Perform(req)
 
 	if err != nil {
-		return total, messages, fmt.Errorf("could not execute search request: %w", err)
+		return total, messages, fmt.Errorf("could not execute search request: %s", err.Error())
 	}
 
 	var response es.SearchResponse
@@ -144,11 +170,12 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	return total, messages, nil
 }
 
+// NodeStates retrieves the Cluster's node state
 func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	u, _ := url.JoinPath(c.URL, "/_nodes/stats")
+	u := "/_nodes/stats"
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 
@@ -158,10 +185,10 @@ func (c *Client) NodeStats() (*es.ClusterStats, error) {
 		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
-	resp, err := c.Client.Do(req)
+	resp, err := c.Perform(req)
 
 	if err != nil {
-		return r, fmt.Errorf("could not fetch cluster nodes statistics: %w", err)
+		return r, fmt.Errorf("could not fetch cluster nodes statistics: %s", err.Error())
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -178,13 +205,14 @@ func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	return r, nil
 }
 
+// Snapshot retrieves the cluster's snapshot states
 func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	r := &es.SnapshotResponse{}
 
-	u, _ := url.JoinPath(c.URL, "/_snapshot/", repository, snapshot)
+	u, _ := url.JoinPath("/_snapshot/", repository, snapshot)
 
 	// Retrieve snapshots in descending order to get latest
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u+"?order=desc", nil)
@@ -193,10 +221,10 @@ func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotRespo
 		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
-	resp, err := c.Client.Do(req)
+	resp, err := c.Perform(req)
 
 	if err != nil {
-		return r, fmt.Errorf("could not fetch snapshots: %w", err)
+		return r, fmt.Errorf("could not fetch snapshots: %s", err.Error())
 	}
 
 	if resp.StatusCode != http.StatusOK {
