@@ -27,10 +27,10 @@ The cluster health status is:
 
 		var rc int
 		// How we map cluster states:
-		// green = 0
-		// yellow = 1
-		// red = 2
-		// unknown = 3
+		// green = OK
+		// yellow = Warning
+		// red = Critical
+		// unknown = Unknown
 		switch health.Status {
 		case "green":
 			rc = check.OK
