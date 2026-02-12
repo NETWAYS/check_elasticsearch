@@ -15,14 +15,14 @@ import (
 )
 
 type Config struct {
-	Hostname []string
-	Bearer   string `env:"CHECK_ELASTICSEARCH_BEARER"`
-	CAFile   string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
-	CertFile string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
-	KeyFile  string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
-	Username string `env:"CHECK_ELASTICSEARCH_USERNAME"`
-	Password string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
-	Insecure bool
+	Hostnames []string
+	Bearer    string `env:"CHECK_ELASTICSEARCH_BEARER"`
+	CAFile    string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
+	CertFile  string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
+	KeyFile   string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
+	Username  string `env:"CHECK_ELASTICSEARCH_USERNAME"`
+	Password  string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
+	Insecure  bool
 }
 
 // LoadFromEnv can be used to load struct values from 'env' tags.
@@ -62,9 +62,9 @@ func loadFromEnv(config any) {
 var cliConfig Config
 
 func (c *Config) NewClient() *client.Client {
-	urls := make([]*url.URL, 0, len(c.Hostname))
+	urls := make([]*url.URL, 0, len(c.Hostnames))
 
-	for _, host := range c.Hostname {
+	for _, host := range c.Hostnames {
 		u, errParse := url.Parse(host)
 
 		if errParse != nil {

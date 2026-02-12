@@ -41,7 +41,7 @@ func init() {
 	})
 
 	pfs := rootCmd.PersistentFlags()
-	pfs.StringArrayVarP(&cliConfig.Hostname, "hostname", "H", []string{"http://localhost:9200"},
+	pfs.StringArrayVarP(&cliConfig.Hostnames, "hostname", "H", []string{"http://localhost:9200"},
 		"URL of an Elasticsearch instance. Can be used multiple times.")
 	pfs.StringVarP(&cliConfig.Username, "username", "U", "",
 		"Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)")
