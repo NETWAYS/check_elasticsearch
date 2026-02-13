@@ -32,7 +32,7 @@ func NewClient(urls []*url.URL, rt http.RoundTripper) *Client {
 // Perform wraps the Client's HTTP call so that we can try all given
 // nodes in case one node is not reachable
 func (c *Client) Perform(req *http.Request) (*http.Response, error) {
-	originalPath := req.URL.String()
+	originalPath := req.URL.Path
 
 	for _, hostURL := range c.URLs {
 		// For each URL take the request, prepend the URL
