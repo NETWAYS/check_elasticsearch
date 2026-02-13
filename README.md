@@ -17,18 +17,17 @@ Available Commands:
   snapshot    Checks the status of Elasticsearch snapshots
 
 Flags:
-  -H, --hostname string    Hostname of the Elasticsearch instance (CHECK_ELASTICSEARCH_HOSTNAME) (default "localhost")
-  -p, --port int           Port of the Elasticsearch instance (default 9200)
-  -U, --username string    Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)
-  -P, --password string    Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
-  -S, --tls                Use a HTTPS connection
-      --insecure           Skip the verification of the server's TLS certificate
-      --ca-file string     Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
-      --cert-file string   Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)
-      --key-file string    Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)
-  -t, --timeout int        Timeout in seconds for the CheckPlugin (default 30)
-  -h, --help               help for check_elasticsearch
-  -v, --version            version for check_elasticsearch
+  -H, --hostname stringArray   URL of an Elasticsearch instance. Can be used multiple times. (default [http://localhost:9200])
+  -U, --username string        Username for HTTP Basic Authentication (CHECK_ELASTICSEARCH_USERNAME)
+  -P, --password string        Password for HTTP Basic Authentication (CHECK_ELASTICSEARCH_PASSWORD)
+  -b, --bearer string          Specify the Bearer Token for authentication (CHECK_ELASTICSEARCH_BEARER)
+      --insecure               Skip the verification of the server's TLS certificate
+      --ca-file string         Specify the CA File for TLS authentication (CHECK_ELASTICSEARCH_CA_FILE)
+      --cert-file string       Specify the Certificate File for TLS authentication (CHECK_ELASTICSEARCH_CERT_FILE)
+      --key-file string        Specify the Key File for TLS authentication (CHECK_ELASTICSEARCH_KEY_FILE)
+  -t, --timeout int            Timeout in seconds for the plugin (default 30)
+  -h, --help                   help for check_elasticsearch
+  -v, --version                version for check_elasticsearch
 ```
 
 The check plugin respects the environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`.
@@ -54,14 +53,22 @@ Examples:
 Elasticsearch cluster with green status (all nodes are running):
 
 ```
-$ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
+$ check_elasticsearch health -U exampleuser -P examplepassword
+[OK] - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
+```
+
+When you have multiple cluster nodes:
+
+```
+$ check_elasticsearch health -U exampleuser -P examplepassword \
+--hostname "https://node1:9200" --hostname "https://node2:9200" --hostname "https://node3:9200"
 [OK] - Cluster es-example-cluster is green | status=0 nodes=3 data_nodes=3 active_primary_shards=10 active_shards=20
 ```
 
 Elasticsearch cluster with yellow status (not all nodes are running):
 
 ```
-$ check_elasticsearch health -U exampleuser -P examplepassword -S --insecure
+$ check_elasticsearch health -U exampleuser -P examplepassword
 [WARNING] - Cluster es-example-cluster is yellow | status=1 nodes=2 data_nodes=2 active_primary_shards=10 active_shards=13```
 ```
 

@@ -36,6 +36,7 @@ type ErrorRootCause struct {
 	Reason string `json:"reason"`
 }
 
+// GetErrors returns the error reasons when they are present in the response
 func (r *SearchResponse) GetErrors() string {
 	if len(r.Error.RootCause) == 0 {
 		return ""

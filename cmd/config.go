@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"reflect"
-	"strconv"
 	"time"
 
 	"github.com/NETWAYS/check_elasticsearch/internal/client"
@@ -16,16 +15,14 @@ import (
 )
 
 type Config struct {
-	Bearer   string // Currently unused in CLI
-	Hostname string `env:"CHECK_ELASTICSEARCH_HOSTNAME"`
-	CAFile   string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
-	CertFile string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
-	KeyFile  string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
-	Username string `env:"CHECK_ELASTICSEARCH_USERNAME"`
-	Password string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
-	Port     int
-	TLS      bool
-	Insecure bool
+	Hostnames []string
+	Bearer    string `env:"CHECK_ELASTICSEARCH_BEARER"`
+	CAFile    string `env:"CHECK_ELASTICSEARCH_CA_FILE"`
+	CertFile  string `env:"CHECK_ELASTICSEARCH_CERT_FILE"`
+	KeyFile   string `env:"CHECK_ELASTICSEARCH_KEY_FILE"`
+	Username  string `env:"CHECK_ELASTICSEARCH_USERNAME"`
+	Password  string `env:"CHECK_ELASTICSEARCH_PASSWORD"`
+	Insecure  bool
 }
 
 // LoadFromEnv can be used to load struct values from 'env' tags.
@@ -65,13 +62,16 @@ func loadFromEnv(config any) {
 var cliConfig Config
 
 func (c *Config) NewClient() *client.Client {
-	u := url.URL{
-		Scheme: "http",
-		Host:   c.Hostname + ":" + strconv.Itoa(c.Port),
-	}
+	urls := make([]*url.URL, 0, len(c.Hostnames))
 
-	if c.TLS {
-		u.Scheme = "https"
+	for _, host := range c.Hostnames {
+		u, errParse := url.Parse(host)
+
+		if errParse != nil {
+			check.ExitError(errParse)
+		}
+
+		urls = append(urls, u)
 	}
 
 	// Create TLS configuration for default RoundTripper
@@ -110,5 +110,5 @@ func (c *Config) NewClient() *client.Client {
 		rt = checkhttpconfig.NewBasicAuthRoundTripper(c.Username, c.Password, rt)
 	}
 
-	return client.NewClient(u.String(), rt)
+	return client.NewClient(urls, rt)
 }
