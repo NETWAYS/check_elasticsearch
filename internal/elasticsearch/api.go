@@ -27,7 +27,7 @@ type HealthResponse struct {
 type SearchResponse struct {
 	Hits  SearchHits `json:"hits"`
 	Error struct {
-		RootCause []ErrorRootCause `json:"root_cause"`
+		RootCause []ErrorRootCause `json:"root_cause,omitempty"`
 	}
 }
 
