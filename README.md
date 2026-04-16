@@ -74,7 +74,7 @@ $ check_elasticsearch health -U exampleuser -P examplepassword
 
 ### Query
 
-Checks the total hits/counts of an Elasticsearch query (using a query_string query type).
+Checks the total hits/counts of an Elasticsearch query (using a query_string query type: [Link to Docs](https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-query-string-query)).
 
 The plugin can count the number of documents based on a provided query string
 and then compare it to the given thresholds
