@@ -66,7 +66,6 @@ func (c *Config) NewClient() *client.Client {
 
 	for _, host := range c.Hostnames {
 		u, errParse := url.Parse(host)
-
 		if errParse != nil {
 			check.ExitError(errParse)
 		}
@@ -81,7 +80,6 @@ func (c *Config) NewClient() *client.Client {
 		KeyFile:            c.KeyFile,
 		CertFile:           c.CertFile,
 	})
-
 	if err != nil {
 		check.ExitError(err)
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// To store the CLI parameters.
+// PipelineConfig stores the CLI parameters.
 type PipelineConfig struct {
 	PipelineNames  []string
 	FailedWarning  string
@@ -63,9 +63,7 @@ var ingestCmd = &cobra.Command{
 
 		for _, node := range stats.Nodes {
 			for pipelineName, pp := range node.Ingest.Pipelines {
-
 				pipelineMatched, regexErr := matches(pipelineName, cliPipelineConfig.PipelineNames)
-
 				if regexErr != nil {
 					check.ExitRaw(check.Unknown, "Invalid regular expression provided:", regexErr.Error())
 				}
@@ -76,15 +74,19 @@ var ingestCmd = &cobra.Command{
 				}
 
 				summary.WriteString("\n \\_")
+
 				if failedCrit.DoesViolate(pp.Failed) {
 					states = append(states, check.Critical)
-					summary.WriteString(fmt.Sprintf(ingestOutput, "[CRITICAL]", pipelineName, pp.Failed))
+
+					fmt.Fprintf(&summary, ingestOutput, "[CRITICAL]", pipelineName, pp.Failed)
 				} else if failedWarn.DoesViolate(pp.Failed) {
 					states = append(states, check.Warning)
-					summary.WriteString(fmt.Sprintf(ingestOutput, "[WARNING]", pipelineName, pp.Failed))
+
+					fmt.Fprintf(&summary, ingestOutput, "[WARNING]", pipelineName, pp.Failed)
 				} else {
 					states = append(states, check.OK)
-					summary.WriteString(fmt.Sprintf(ingestOutput, "[OK]", pipelineName, pp.Failed))
+
+					fmt.Fprintf(&summary, ingestOutput, "[OK]", pipelineName, pp.Failed)
 				}
 
 				perfList.Add(&perfdata.Perfdata{
@@ -142,7 +144,6 @@ func init() {
 func matches(input string, regexToMatch []string) (bool, error) {
 	for _, regex := range regexToMatch {
 		re, err := regexp.Compile(regex)
-
 		if err != nil {
 			return false, err
 		}

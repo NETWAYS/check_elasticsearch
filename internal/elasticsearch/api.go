@@ -23,6 +23,7 @@ type HealthResponse struct {
 	ActiveShardsPercentAsNumber float64 `json:"active_shards_percent_as_number"`
 }
 
+// SearchResponse represents the answer to an elastic search query
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html#search-api-response-body
 type SearchResponse struct {
 	Hits  SearchHits `json:"hits"`
@@ -78,11 +79,13 @@ type SearchRequest struct {
 	Query Query `json:"query"`
 }
 
+// Query represents a query against elastic search
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
 type Query struct {
 	QueryString *QueryString `json:"query_string,omitempty"`
 }
 
+// QueryString, what the name says
 // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
 type QueryString struct {
 	Query string `json:"query"`

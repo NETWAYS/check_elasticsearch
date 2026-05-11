@@ -44,19 +44,20 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			cliQueryConfig.Index,
 			cliQueryConfig.Query,
 			cliQueryConfig.MessageKey)
-
 		if err != nil {
 			check.ExitError(err)
 		}
 
-		output.WriteString(fmt.Sprintf("Search query hits: %d", total))
+		fmt.Fprintf(&output, "Search query hits: %d", total)
 
 		if len(messages) > 0 {
 			output.WriteString("\n")
+
 			for _, msg := range messages {
 				if len(msg) > cliQueryConfig.MessageLen {
 					msg = msg[0:cliQueryConfig.MessageLen]
 				}
+
 				output.WriteString(msg + "\n")
 			}
 		}
