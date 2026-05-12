@@ -25,6 +25,7 @@ linters:
     - varnamelen
     - wrapcheck
     - funlen
+    - wsl
   exclusions:
     generated: lax
     presets:

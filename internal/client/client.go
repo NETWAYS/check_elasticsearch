@@ -40,8 +40,7 @@ func (c *Client) Perform(req *http.Request) (*http.Response, error) {
 
 		req.URL, _ = url.Parse(u)
 
-		resp, errDo := c.Client.Do(req)
-
+		resp, errDo := c.Client.Do(req) //nolint: gosec
 		if errDo != nil {
 			// If there's an error we try the next host
 			continue
@@ -69,7 +68,6 @@ func (c *Client) Health() (*es.HealthResponse, error) {
 	}
 
 	resp, err := c.Perform(req)
-
 	if err != nil {
 		return r, fmt.Errorf("could not fetch cluster health: %s", err.Error())
 	}
@@ -81,7 +79,6 @@ func (c *Client) Health() (*es.HealthResponse, error) {
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(r)
-
 	if err != nil {
 		return r, fmt.Errorf("error parsing the response body: %w", err)
 	}
@@ -131,7 +128,6 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	req.URL.RawQuery = p.Encode()
 
 	resp, err := c.Perform(req)
-
 	if err != nil {
 		return total, messages, fmt.Errorf("could not execute search request: %s", err.Error())
 	}
@@ -139,8 +135,8 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	var response es.SearchResponse
 
 	defer resp.Body.Close()
-	err = json.NewDecoder(resp.Body).Decode(&response)
 
+	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		return total, messages, fmt.Errorf("error parsing the response body: %w", err)
 	}
@@ -170,7 +166,7 @@ func (c *Client) SearchMessages(index string, query string, messageKey string) (
 	return total, messages, nil
 }
 
-// NodeStates retrieves the Cluster's node state
+// NodeStats retrieves the Cluster's node statistics
 func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -186,7 +182,6 @@ func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	}
 
 	resp, err := c.Perform(req)
-
 	if err != nil {
 		return r, fmt.Errorf("could not fetch cluster nodes statistics: %s", err.Error())
 	}
@@ -196,8 +191,8 @@ func (c *Client) NodeStats() (*es.ClusterStats, error) {
 	}
 
 	defer resp.Body.Close()
-	err = json.NewDecoder(resp.Body).Decode(r)
 
+	err = json.NewDecoder(resp.Body).Decode(r)
 	if err != nil {
 		return r, fmt.Errorf("error parsing the response body: %w", err)
 	}
@@ -216,13 +211,11 @@ func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotRespo
 
 	// Retrieve snapshots in descending order to get latest
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u+"?order=desc", nil)
-
 	if err != nil {
 		return r, fmt.Errorf("error creating request: %w", err)
 	}
 
 	resp, err := c.Perform(req)
-
 	if err != nil {
 		return r, fmt.Errorf("could not fetch snapshots: %s", err.Error())
 	}
@@ -234,7 +227,6 @@ func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotRespo
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(r)
-
 	if err != nil {
 		return r, fmt.Errorf("could not decode snapshot response: %w", err)
 	}

@@ -26,7 +26,8 @@ func Execute(version string) {
 	rootCmd.Version = version
 	rootCmd.VersionTemplate()
 
-	if err := rootCmd.Execute(); err != nil {
+	err := rootCmd.Execute()
+	if err != nil {
 		check.ExitError(err)
 	}
 }

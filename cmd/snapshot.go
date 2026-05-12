@@ -55,7 +55,6 @@ $ check_elasticsearch snapshot --number 5
 		client := cliConfig.NewClient()
 
 		snapResponse, err := client.Snapshot(repository, snapshot)
-
 		if err != nil {
 			check.ExitError(err)
 		}
@@ -77,25 +76,29 @@ $ check_elasticsearch snapshot --number 5
 		var summary strings.Builder
 
 		for _, snap := range snapResponse.Snapshots[:numberOfSnapshots] {
-
 			summary.WriteString("\n \\_")
 
 			switch snap.State {
 			default:
 				sStates = append(sStates, check.Unknown)
-				summary.WriteString(fmt.Sprintf("[UNKNOWN] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository))
+
+				fmt.Fprintf(&summary, "[UNKNOWN] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository)
 			case "SUCCESS":
 				sStates = append(sStates, check.OK)
-				summary.WriteString(fmt.Sprintf("[OK] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository))
+
+				fmt.Fprintf(&summary, "[OK] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository)
 			case "PARTIAL":
 				sStates = append(sStates, check.Warning)
-				summary.WriteString(fmt.Sprintf("[WARNING] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository))
+
+				fmt.Fprintf(&summary, "[WARNING] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository)
 			case "FAILED":
 				sStates = append(sStates, check.Critical)
-				summary.WriteString(fmt.Sprintf("[CRITICAL] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository))
+
+				fmt.Fprintf(&summary, "[CRITICAL] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository)
 			case "IN PROGRESS":
 				sStates = append(sStates, check.Unknown)
-				summary.WriteString(fmt.Sprintf("[UNKNOWN] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository))
+
+				fmt.Fprintf(&summary, "[UNKNOWN] Snapshot: %s, State %s, Repository: %s", snap.Snapshot, snap.State, snap.Repository)
 			}
 		}
 
