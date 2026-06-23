@@ -77,7 +77,9 @@ $ check_elasticsearch health -U exampleuser -P examplepassword
 Checks the total hits/counts of an Elasticsearch query (using a query_string query type: [Link to Docs](https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-query-string-query)).
 
 The plugin can count the number of documents based on a provided query string
-and then compare it to the given thresholds
+and then compare it to the given thresholds.
+
+The warning and critical flags support thresholds in the common Nagios format (e.g. `~:10`).
 
 With the `--msgkey` flag extracts a value from a given field and shows in in the output.
 This is intended to show message/body/log field values in the plugin output.
