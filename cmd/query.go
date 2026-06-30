@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +33,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 		"-I \"kibana_sample_data_logs\" -k \"message\"",
 	Run: func(_ *cobra.Command, _ []string) {
 		var (
-			rc     int
+			rc     check.Status
 			output strings.Builder
 		)
 
@@ -80,11 +79,11 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-
 			rc = check.OK
 		}
 
-		p := perfdata.PerfdataList{
+		p := check.PerfdataList{
 			{Label: "query_hits", Value: total, Warn: warn, Crit: crit, Uom: "c"},
 		}
 
-		check.ExitRaw(rc, output.String(), "|", p.String())
+		check.ExitWithPerfdata(rc, p, output.String())
 	},
 }
 

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +24,7 @@ The cluster health status is:
 			check.ExitError(err)
 		}
 
-		var rc int
+		var rc check.Status
 		// How we map cluster states:
 		// green = OK
 		// yellow = Warning
@@ -47,14 +46,14 @@ The cluster health status is:
 			output = "Cluster " + health.ClusterName + " is " + health.Status
 		}
 
-		p := perfdata.PerfdataList{
+		p := check.PerfdataList{
 			{Label: "nodes", Value: health.NumberOfNodes},
 			{Label: "data_nodes", Value: health.NumberOfDataNodes},
 			{Label: "active_primary_shards", Value: health.ActivePrimaryShards},
 			{Label: "active_shards", Value: health.ActiveShards},
 		}
 
-		check.ExitRaw(rc, output, "|", p.String())
+		check.ExitWithPerfdata(rc, p, output)
 	},
 }
 
