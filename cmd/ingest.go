@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/NETWAYS/go-check"
-	"github.com/NETWAYS/go-check/perfdata"
-	"github.com/NETWAYS/go-check/result"
 	"github.com/spf13/cobra"
 )
 
@@ -28,9 +26,9 @@ var ingestCmd = &cobra.Command{
 	Long:  `Checks the ingest statistics of Ingest Pipelines`,
 	Run: func(_ *cobra.Command, _ []string) {
 		var (
-			rc       int
+			rc       check.Status
 			output   string
-			perfList perfdata.PerfdataList
+			perfList check.PerfdataList
 		)
 
 		failedCrit, err := check.ParseThreshold(cliPipelineConfig.FailedCritical)
@@ -56,7 +54,7 @@ var ingestCmd = &cobra.Command{
 			amountOfNodes += len(node.Ingest.Pipelines)
 		}
 
-		states := make([]int, 0, amountOfNodes)
+		states := make([]check.Status, 0, amountOfNodes)
 
 		// Check status for each pipeline
 		var summary strings.Builder
@@ -65,7 +63,7 @@ var ingestCmd = &cobra.Command{
 			for pipelineName, pp := range node.Ingest.Pipelines {
 				pipelineMatched, regexErr := matches(pipelineName, cliPipelineConfig.PipelineNames)
 				if regexErr != nil {
-					check.ExitRaw(check.Unknown, "Invalid regular expression provided:", regexErr.Error())
+					check.Exit(check.Unknown, "Invalid regular expression provided:", regexErr.Error())
 				}
 
 				if !pipelineMatched && len(cliPipelineConfig.PipelineNames) >= 1 {
@@ -89,24 +87,25 @@ var ingestCmd = &cobra.Command{
 					fmt.Fprintf(&summary, ingestOutput, "[OK]", pipelineName, pp.Failed)
 				}
 
-				perfList.Add(&perfdata.Perfdata{
+				perfList.Add(&check.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.failed", pipelineName),
 					Uom:   "c",
 					Warn:  failedWarn,
 					Crit:  failedCrit,
 					Value: pp.Failed})
-				perfList.Add(&perfdata.Perfdata{
+				perfList.Add(&check.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.count", pipelineName),
 					Uom:   "c",
 					Value: pp.Count})
-				perfList.Add(&perfdata.Perfdata{
+				perfList.Add(&check.Perfdata{
 					Label: fmt.Sprintf("pipelines.%s.current", pipelineName),
 					Value: pp.Current})
 			}
 		}
 
 		// Validate the various subchecks and use the worst state as return code
-		switch result.WorstState(states...) {
+		//nolint:exhaustive
+		switch check.WorstState(states...) {
 		case 0:
 			rc = check.OK
 			output = "Ingest operations alright"
@@ -121,7 +120,7 @@ var ingestCmd = &cobra.Command{
 			output = "Ingest operations status unknown"
 		}
 
-		check.ExitRaw(rc, output, summary.String(), "|", perfList.String())
+		check.ExitWithPerfdata(rc, perfList, output, summary.String())
 	},
 }
 

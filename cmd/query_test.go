@@ -39,7 +39,7 @@ func TestQueryCmd(t *testing.T) {
 				w.Write([]byte(`{}`))
 			})),
 			args:     []string{"run", "../main.go", "query"},
-			expected: "[OK] - Search query hits: 0 | query_hits=0c;20;50\n",
+			expected: "[OK] - Search query hits: 0|query_hits=0c;20;50\n",
 		},
 		{
 			name: "query-no-such-index",
@@ -61,7 +61,7 @@ func TestQueryCmd(t *testing.T) {
 			args: []string{"run", "../main.go", "query", "-q", "vent.dataset:sample_web_logs and @timestamp:[now-5m TO now]", "-I", "kibana_sample_data_logs", "-k", "message"},
 			expected: `[CRITICAL] - Search query hits: 14074
 30.156.16.163--[2018-09-01T12:44:53.756Z]"GET/wp-content/HTTP/1.1"4041831"-""Moz
- | query_hits=14074c;20;50
+|query_hits=14074c;20;50
 exit status 2
 `,
 		},
@@ -76,7 +76,7 @@ exit status 2
 			expected: `[OK] - Search query hits: 2
 One
 One
- | query_hits=2c;3;50
+|query_hits=2c;3;50
 `,
 		},
 		{
@@ -87,7 +87,7 @@ One
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":2,"relation":"eq"},"max_score":1.0,"hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":1.0,"_source":{"title":"One","tags":["ruby"]}},{"_index":"my_index","_type":"_doc","_id":"y0i9voQB87C1kW3I9y74","_score":1.0,"_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args: []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "-w", "3"},
-			expected: `[OK] - Search query hits: 2 | query_hits=2c;3;50
+			expected: `[OK] - Search query hits: 2|query_hits=2c;3;50
 `,
 		},
 		{
@@ -101,7 +101,7 @@ One
 			expected: `[CRITICAL] - Search query hits: 2
 One
 One
- | query_hits=2c;20;1
+|query_hits=2c;20;1
 exit status 2
 `,
 		},
@@ -116,7 +116,7 @@ exit status 2
 			expected: `[WARNING] - Search query hits: 2
 One
 One
- | query_hits=2c;1;50
+|query_hits=2c;1;50
 exit status 1
 `,
 		},
