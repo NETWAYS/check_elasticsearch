@@ -128,7 +128,7 @@ exit status 1
 				w.Write([]byte(`{"took":3,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":"foo","relation":"eq"},"max_score":"bar","hits":[{"_index":"my_index","_type":"_doc","_id":"yUi6voQB87C1kW3InC4l","_score":"bla","_source":{"title":"One","tags":["ruby"]}}]}}`))
 			})),
 			args:     []string{"run", "../main.go", "query", "-I", "my_index", "-q", "*", "--msgkey", "title", "-w", "1"},
-			expected: "[UNKNOWN] - error parsing the response body: json: cannot unmarshal string into Go struct field SearchTotal.hits.total.value of type uint (*fmt.wrapError)\nexit status 3\n",
+			expected: "[UNKNOWN] - error parsing the response body: json: cannot unmarshal string into Go struct field SearchResponse.hits.total.value of type uint (*fmt.wrapError)\nexit status 3\n",
 		},
 	}
 

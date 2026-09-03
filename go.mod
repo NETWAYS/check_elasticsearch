@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/NETWAYS/go-check v1.0.0
-	github.com/NETWAYS/go-check-network/http v0.0.0-20230928080609-57070f836e41
+	github.com/NETWAYS/go-check-network/http v0.0.0-20260801230459-99c2742b03a9
 	github.com/spf13/cobra v1.10.2
 )
 
