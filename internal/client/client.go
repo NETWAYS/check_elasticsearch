@@ -33,10 +33,14 @@ func NewClient(urls []*url.URL, rt http.RoundTripper) *Client {
 // nodes in case one node is not reachable
 func (c *Client) Perform(req *http.Request) (*http.Response, error) {
 	originalPath := req.URL.Path
+	originalQuery := req.URL.RawQuery
 
 	for _, hostURL := range c.URLs {
 		// For each URL take the request, prepend the URL
 		u, _ := url.JoinPath(hostURL.String(), originalPath)
+		if originalQuery != "" {
+			u += "?" + originalQuery
+		}
 
 		req.URL, _ = url.Parse(u)
 
@@ -209,8 +213,12 @@ func (c *Client) Snapshot(repository string, snapshot string) (*es.SnapshotRespo
 
 	u, _ := url.JoinPath("/_snapshot/", repository, snapshot)
 
+	params := url.Values{}
+	params.Add("sort", "start_time")
+	params.Add("order", "desc")
+
 	// Retrieve snapshots in descending order to get latest
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u+"?order=desc", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u+"?"+params.Encode(), nil)
 	if err != nil {
 		return r, fmt.Errorf("error creating request: %w", err)
 	}
